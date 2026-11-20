@@ -6,7 +6,7 @@
 <title>Annotile：带细胞注释的切片模式</title>
 <style>
   body { margin: 0; background: #f6f4ef; color: #1c1917; font: 17px/1.65 "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
-  main { max-width: 920px; margin: 0 auto; padding: 40px 20px 80px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
   h1 { font-size: 34px; line-height: 1.25; margin-bottom: 8px; }
   h2 { margin-top: 42px; font-size: 22px; }
   p, li { max-width: 74ch; }
@@ -54,6 +54,11 @@
 <img src="figures/fine_correlation.png" alt="细簇平均组成的相关矩阵">
 <table><thead><tr><th>模式</th><th>包含的细簇</th><th>小窗</th><th>细胞</th><th>主要细胞类型</th></tr></thead><tbody><tr><td>P1</td><td>F0</td><td>222</td><td>225,414</td><td>epi 55.0%</td></tr><tr><td>P2</td><td>F2</td><td>195</td><td>171,726</td><td>nkt 22.4%、epi 16.8%</td></tr><tr><td>P3</td><td>F1 F4</td><td>215</td><td>87,147</td><td>endo 33.9%、fib 19.8%</td></tr><tr><td>P4</td><td>F5</td><td>77</td><td>54,156</td><td>fib_SYNPO2 20.4%、cil 16.7%</td></tr><tr><td>P5</td><td>F3</td><td>76</td><td>24,570</td><td>endo 42.0%、epi? 26.6%</td></tr></tbody></table>
 <img src="figures/pattern_composition.png" alt="每个模式的细胞类型比例">
+
+<h2><span class="step">每个模式的样子</span></h2>
+<p>版式对应原文图 2。A 的每个点是一个小窗，t-SNE 用细胞类型比例，颜色是细簇。B 是细簇平均组成的相关矩阵，只保留下三角，左侧色条是合并后的模式。C 的每一格是该模式里细胞较多的一个代表性小窗，边框颜色和 B 一致；格里的点是细胞，颜色是细胞类型。</p>
+<img src="figures/fig2.png" alt="按原文图2排版的细簇、相关矩阵和代表性小窗">
+<img src="figures/fig2c.png" alt="每个模式的代表性小窗">
 
 <h2><span class="step">6. 每张切片的模式组成</span></h2>
 <p>一张切片的向量是各个模式所占的细胞比例。下表是这次运行的结果。三张切片来自三个公开实验、各一个供体，切片之间的相关只能描述这三张片子，不能当成患者分型。</p>

@@ -416,3 +416,5 @@ def _figures(fig_dir, window, labels, summary, correlation, fine_to_pattern, cel
         fig.tight_layout()
         fig.savefig(fig_dir / f"space_{spec_name}.png", dpi=140)
         plt.close(fig)
+    from annotile.portraits import draw_portraits
+    draw_portraits(window, summary, fig_dir)
