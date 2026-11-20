@@ -1,0 +1,551 @@
+{
+  "method": {
+    "window_um": 400.0,
+    "min_cells": 30,
+    "seed": 42,
+    "fine_k": 6,
+    "silhouette": [
+      {
+        "k": 6,
+        "silhouette": 0.4095
+      },
+      {
+        "k": 8,
+        "silhouette": 0.3728
+      },
+      {
+        "k": 10,
+        "silhouette": 0.3526
+      },
+      {
+        "k": 12,
+        "silhouette": 0.3426
+      },
+      {
+        "k": 14,
+        "silhouette": 0.335
+      },
+      {
+        "k": 16,
+        "silhouette": 0.3512
+      },
+      {
+        "k": 18,
+        "silhouette": 0.3209
+      },
+      {
+        "k": 20,
+        "silhouette": 0.3362
+      }
+    ],
+    "merged_patterns": 5,
+    "bic": [
+      {
+        "g": 2,
+        "bic": 245.86
+      },
+      {
+        "g": 3,
+        "bic": 161.38
+      },
+      {
+        "g": 4,
+        "bic": 42.81
+      },
+      {
+        "g": 5,
+        "bic": -59.1
+      }
+    ],
+    "feature": "cell-annotation fraction inside each spatial window"
+  },
+  "labels": [
+    "AT1",
+    "AT2_like",
+    "Tfh_CXCL13_region",
+    "b",
+    "cil",
+    "endo",
+    "endo?",
+    "epi",
+    "epi?",
+    "fib",
+    "fib_SYNPO2",
+    "fib_activated",
+    "lymph_endo",
+    "mast",
+    "mph",
+    "nkt",
+    "normal_epi",
+    "plasma"
+  ],
+  "slices": [
+    {
+      "name": "5k",
+      "title": "Prime 5K 肺腺癌",
+      "source": "https://www.10xgenomics.com/datasets/xenium-human-lung-cancer-post-xenium-technote",
+      "cells_annotated": 278146,
+      "cells_with_centroid": 278146,
+      "join_rate": 1.0,
+      "cells_kept": 253699,
+      "dropped": {
+        "low_feat_cell": 9048,
+        "lymph_endo?CCL19": 9035,
+        "mph_CXCL9_region": 5140,
+        "epi?GRP": 1224
+      },
+      "windows": 403,
+      "cells_in_windows": 253512,
+      "cells_outside_windows": 187
+    },
+    {
+      "name": "lc",
+      "title": "免疫组库面板肺癌",
+      "source": "https://www.10xgenomics.com/datasets/ffpe-human-lung-cancer-data-with-human-immuno-oncology-profiling-panel-and-custom-add-on-1-standard",
+      "cells_annotated": 160448,
+      "cells_with_centroid": 160448,
+      "join_rate": 1.0,
+      "cells_kept": 147889,
+      "dropped": {
+        "low_feat_cell": 7892,
+        "fib?": 4667
+      },
+      "windows": 226,
+      "cells_in_windows": 147759,
+      "cells_outside_windows": 130
+    },
+    {
+      "name": "luad",
+      "title": "多模态分割肺腺癌",
+      "source": "https://www.10xgenomics.com/datasets/preview-data-ffpe-human-lung-cancer-with-xenium-multimodal-cell-segmentation-1-standard",
+      "cells_annotated": 161894,
+      "cells_with_centroid": 161894,
+      "join_rate": 1.0,
+      "cells_kept": 161894,
+      "dropped": {},
+      "windows": 156,
+      "cells_in_windows": 161742,
+      "cells_outside_windows": 152
+    }
+  ],
+  "windows": 785,
+  "neighbor_agreement": 0.7465,
+  "patterns": [
+    {
+      "pattern": "P1",
+      "fine_clusters": [
+        "F0"
+      ],
+      "windows": 222,
+      "cells": 225414,
+      "annotation_fraction": {
+        "AT1": 0.0005,
+        "AT2_like": 0.0018,
+        "Tfh_CXCL13_region": 0.0033,
+        "b": 0.0085,
+        "cil": 0.0004,
+        "endo": 0.0375,
+        "endo?": 0.0066,
+        "epi": 0.5505,
+        "epi?": 0.0113,
+        "fib": 0.0919,
+        "fib_SYNPO2": 0.0085,
+        "fib_activated": 0.0199,
+        "lymph_endo": 0.0006,
+        "mast": 0.009,
+        "mph": 0.1044,
+        "nkt": 0.1214,
+        "normal_epi": 0.0001,
+        "plasma": 0.0238
+      },
+      "top_annotations": [
+        "epi"
+      ]
+    },
+    {
+      "pattern": "P2",
+      "fine_clusters": [
+        "F2"
+      ],
+      "windows": 195,
+      "cells": 171726,
+      "annotation_fraction": {
+        "AT1": 0.0009,
+        "AT2_like": 0.003,
+        "Tfh_CXCL13_region": 0.0164,
+        "b": 0.0684,
+        "cil": 0.009,
+        "endo": 0.0415,
+        "endo?": 0.033,
+        "epi": 0.1683,
+        "epi?": 0.0689,
+        "fib": 0.0811,
+        "fib_SYNPO2": 0.0187,
+        "fib_activated": 0.0182,
+        "lymph_endo": 0.0054,
+        "mast": 0.0101,
+        "mph": 0.1405,
+        "nkt": 0.224,
+        "normal_epi": 0.0003,
+        "plasma": 0.0924
+      },
+      "top_annotations": [
+        "nkt",
+        "epi"
+      ]
+    },
+    {
+      "pattern": "P3",
+      "fine_clusters": [
+        "F1",
+        "F4"
+      ],
+      "windows": 215,
+      "cells": 87147,
+      "annotation_fraction": {
+        "AT1": 0.1017,
+        "AT2_like": 0.0826,
+        "Tfh_CXCL13_region": 0.0,
+        "b": 0.0019,
+        "cil": 0.0032,
+        "endo": 0.3385,
+        "endo?": 0.0,
+        "epi": 0.0119,
+        "epi?": 0.0,
+        "fib": 0.1982,
+        "fib_SYNPO2": 0.0455,
+        "fib_activated": 0.0019,
+        "lymph_endo": 0.0,
+        "mast": 0.0163,
+        "mph": 0.0889,
+        "nkt": 0.0968,
+        "normal_epi": 0.003,
+        "plasma": 0.0096
+      },
+      "top_annotations": [
+        "endo",
+        "fib"
+      ]
+    },
+    {
+      "pattern": "P4",
+      "fine_clusters": [
+        "F5"
+      ],
+      "windows": 77,
+      "cells": 54156,
+      "annotation_fraction": {
+        "AT1": 0.0049,
+        "AT2_like": 0.0121,
+        "Tfh_CXCL13_region": 0.0,
+        "b": 0.0452,
+        "cil": 0.1666,
+        "endo": 0.0946,
+        "endo?": 0.0,
+        "epi": 0.0468,
+        "epi?": 0.0,
+        "fib": 0.1379,
+        "fib_SYNPO2": 0.2042,
+        "fib_activated": 0.0152,
+        "lymph_endo": 0.0,
+        "mast": 0.0302,
+        "mph": 0.0674,
+        "nkt": 0.1129,
+        "normal_epi": 0.0,
+        "plasma": 0.0618
+      },
+      "top_annotations": [
+        "fib_SYNPO2",
+        "cil"
+      ]
+    },
+    {
+      "pattern": "P5",
+      "fine_clusters": [
+        "F3"
+      ],
+      "windows": 76,
+      "cells": 24570,
+      "annotation_fraction": {
+        "AT1": 0.0,
+        "AT2_like": 0.0,
+        "Tfh_CXCL13_region": 0.0035,
+        "b": 0.0127,
+        "cil": 0.0,
+        "endo": 0.4197,
+        "endo?": 0.0083,
+        "epi": 0.0009,
+        "epi?": 0.2655,
+        "fib": 0.0036,
+        "fib_SYNPO2": 0.0,
+        "fib_activated": 0.0,
+        "lymph_endo": 0.0157,
+        "mast": 0.0187,
+        "mph": 0.1351,
+        "nkt": 0.0869,
+        "normal_epi": 0.0,
+        "plasma": 0.0295
+      },
+      "top_annotations": [
+        "endo",
+        "epi?"
+      ]
+    }
+  ],
+  "slice_pattern_fraction": {
+    "5k": {
+      "P1": 0.2302,
+      "P2": 0.2428,
+      "P3": 0.3198,
+      "P4": 0.2072,
+      "P5": 0.0
+    },
+    "lc": {
+      "P1": 0.2003,
+      "P2": 0.6334,
+      "P3": 0.0,
+      "P4": 0.0,
+      "P5": 0.1663
+    },
+    "luad": {
+      "P1": 0.8499,
+      "P2": 0.1025,
+      "P3": 0.0376,
+      "P4": 0.01,
+      "P5": 0.0
+    }
+  },
+  "slice_correlation": [
+    [
+      1.0,
+      -0.0008,
+      0.1982
+    ],
+    [
+      -0.0008,
+      1.0,
+      0.0927
+    ],
+    [
+      0.1982,
+      0.0927,
+      1.0
+    ]
+  ],
+  "slice_names": [
+    "5k",
+    "lc",
+    "luad"
+  ],
+  "cluster_overlay": [
+    {
+      "slice": "5k",
+      "pattern": "P1",
+      "cells": 58357,
+      "top_seurat": [
+        {
+          "cluster": "1",
+          "fraction": 0.3601
+        },
+        {
+          "cluster": "7",
+          "fraction": 0.1277
+        },
+        {
+          "cluster": "0",
+          "fraction": 0.1242
+        }
+      ]
+    },
+    {
+      "slice": "5k",
+      "pattern": "P2",
+      "cells": 61560,
+      "top_seurat": [
+        {
+          "cluster": "0",
+          "fraction": 0.2451
+        },
+        {
+          "cluster": "1",
+          "fraction": 0.1615
+        },
+        {
+          "cluster": "4",
+          "fraction": 0.1159
+        }
+      ]
+    },
+    {
+      "slice": "5k",
+      "pattern": "P3",
+      "cells": 81061,
+      "top_seurat": [
+        {
+          "cluster": "2",
+          "fraction": 0.3403
+        },
+        {
+          "cluster": "3",
+          "fraction": 0.1776
+        },
+        {
+          "cluster": "9",
+          "fraction": 0.1093
+        }
+      ]
+    },
+    {
+      "slice": "5k",
+      "pattern": "P4",
+      "cells": 52534,
+      "top_seurat": [
+        {
+          "cluster": "5",
+          "fraction": 0.2105
+        },
+        {
+          "cluster": "8",
+          "fraction": 0.1605
+        },
+        {
+          "cluster": "3",
+          "fraction": 0.1376
+        }
+      ]
+    },
+    {
+      "slice": "lc",
+      "pattern": "P1",
+      "cells": 29600,
+      "top_seurat": [
+        {
+          "cluster": "0",
+          "fraction": 0.4736
+        },
+        {
+          "cluster": "1",
+          "fraction": 0.1334
+        },
+        {
+          "cluster": "2",
+          "fraction": 0.1168
+        }
+      ]
+    },
+    {
+      "slice": "lc",
+      "pattern": "P2",
+      "cells": 93589,
+      "top_seurat": [
+        {
+          "cluster": "1",
+          "fraction": 0.1981
+        },
+        {
+          "cluster": "2",
+          "fraction": 0.1652
+        },
+        {
+          "cluster": "0",
+          "fraction": 0.1527
+        }
+      ]
+    },
+    {
+      "slice": "lc",
+      "pattern": "P5",
+      "cells": 24570,
+      "top_seurat": [
+        {
+          "cluster": "3",
+          "fraction": 0.4197
+        },
+        {
+          "cluster": "5",
+          "fraction": 0.2372
+        },
+        {
+          "cluster": "2",
+          "fraction": 0.1351
+        }
+      ]
+    },
+    {
+      "slice": "luad",
+      "pattern": "P1",
+      "cells": 137457,
+      "top_seurat": [
+        {
+          "cluster": "0",
+          "fraction": 0.2358
+        },
+        {
+          "cluster": "1",
+          "fraction": 0.2218
+        },
+        {
+          "cluster": "4",
+          "fraction": 0.1271
+        }
+      ]
+    },
+    {
+      "slice": "luad",
+      "pattern": "P2",
+      "cells": 16577,
+      "top_seurat": [
+        {
+          "cluster": "2",
+          "fraction": 0.2917
+        },
+        {
+          "cluster": "3",
+          "fraction": 0.1311
+        },
+        {
+          "cluster": "8",
+          "fraction": 0.1108
+        }
+      ]
+    },
+    {
+      "slice": "luad",
+      "pattern": "P3",
+      "cells": 6086,
+      "top_seurat": [
+        {
+          "cluster": "3",
+          "fraction": 0.3005
+        },
+        {
+          "cluster": "6",
+          "fraction": 0.2356
+        },
+        {
+          "cluster": "9",
+          "fraction": 0.1722
+        }
+      ]
+    },
+    {
+      "slice": "luad",
+      "pattern": "P4",
+      "cells": 1622,
+      "top_seurat": [
+        {
+          "cluster": "12",
+          "fraction": 0.3631
+        },
+        {
+          "cluster": "2",
+          "fraction": 0.1356
+        },
+        {
+          "cluster": "3",
+          "fraction": 0.1159
+        }
+      ]
+    }
+  ]
+}

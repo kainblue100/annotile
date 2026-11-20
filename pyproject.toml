@@ -1,0 +1,22 @@
+[project]
+name = "annotile"
+version = "0.1.0"
+description = "Cluster annotated spatial slices into tissue patterns"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "pandas",
+  "scikit-learn",
+  "matplotlib",
+  "scipy",
+]
+
+[project.scripts]
+annotile = "annotile.__main__:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

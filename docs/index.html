@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annotile：带细胞注释的切片模式</title>
+<style>
+  body { margin: 0; background: #f6f4ef; color: #1c1917; font: 17px/1.65 "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 34px; line-height: 1.25; margin-bottom: 8px; }
+  h2 { margin-top: 42px; font-size: 22px; }
+  p, li { max-width: 74ch; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0 22px; background: white; font-size: 14.5px; }
+  th, td { border: 1px solid #e7e5e4; padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #292524; color: white; font-weight: 600; }
+  img { width: 100%; height: auto; background: white; border: 1px solid #e7e5e4; }
+  .step { color: #9a3412; font-weight: 700; }
+  a { color: #9a3412; }
+</style>
+</head>
+<body>
+<main>
+<h1>Annotile</h1>
+<p>把已经标好细胞类型的空间切片划成小窗，按窗里的细胞类型组成聚类，得到可以在切片之间比较的组织模式。</p>
+<p>输入来自三张公开的人肺 Xenium 切片。细胞类型注释来自 <a href="https://github.com/D10ny3u3/GHIST_input">GHIST_input</a>。细胞坐标来自对应的 10x Genomics <code>cells.csv.gz</code>。形态学流程参照 Zhang、Liu、Chen 等人在 <a href="https://doi.org/10.1186/s13073-025-01526-5">Genome Medicine 2025</a> 上的 HIPO：先得到一批细簇，再用高斯混合按 BIC 把相似细簇合并成模式，最后看每张切片由哪些模式组成。</p>
+<p>HIPO 的细簇特征是 H&amp;E 图块的对比学习向量。这里的切片已经带有细胞注释，所以小窗特征是细胞类型比例。这是比原文多出来的那一维。转录组 Seurat 簇没有放进跨切片的特征里，因为不同实验的簇编号不是同一种细胞状态；它们只在最后用来描述每个模式里混有哪些转录组簇。</p>
+
+<h2><span class="step">数据</span></h2>
+<ul><li><a href="https://www.10xgenomics.com/datasets/xenium-human-lung-cancer-post-xenium-technote">Prime 5K 肺腺癌</a>（5k）</li><li><a href="https://www.10xgenomics.com/datasets/ffpe-human-lung-cancer-data-with-human-immuno-oncology-profiling-panel-and-custom-add-on-1-standard">免疫组库面板肺癌</a>（lc）</li><li><a href="https://www.10xgenomics.com/datasets/preview-data-ffpe-human-lung-cancer-with-xenium-multimodal-cell-segmentation-1-standard">多模态分割肺腺癌</a>（luad）</li></ul>
+<p>注释表只有细胞编号和类型。坐标按细胞编号拼回去。三张切片的编号匹配率都在下面的表里。随机种子是 42。</p>
+
+<h2><span class="step">1. 留下可用的细胞注释</span></h2>
+<p>注释说明里，<code>low_feat_cell</code>、<code>mph_CXCL9_region</code>、<code>fib?</code>，以及 CCL19 混合群（表中的 <code>lymph_endo?CCL19</code>）被标成混合或不采用。带问号、又不在保留名单里的标签也去掉。说明明确写了对照图像后保留的 <code>epi?</code> 和 <code>endo?</code> 留在分析里。<code>fib_SYNPO2</code> 按原表保留，说明里把它进一步看成血管平滑肌。</p>
+<p>保留下来的类型：AT1、AT2_like、Tfh_CXCL13_region、b、cil、endo、endo?、epi、epi?、fib、fib_SYNPO2、fib_activated、lymph_endo、mast、mph、nkt、normal_epi、plasma。</p>
+<table><thead><tr><th>切片</th><th>注释细胞</th><th>坐标匹配</th><th>过滤后</th><th>进入小窗</th><th>小窗以外</th><th>去掉的标签</th></tr></thead><tbody><tr><td>5k</td><td>278,146</td><td>100.0%</td><td>253,699</td><td>253,512</td><td>187</td><td>low_feat_cell 9048，lymph_endo?CCL19 9035，mph_CXCL9_region 5140，epi?GRP 1224</td></tr><tr><td>lc</td><td>160,448</td><td>100.0%</td><td>147,889</td><td>147,759</td><td>130</td><td>low_feat_cell 7892，fib? 4667</td></tr><tr><td>luad</td><td>161,894</td><td>100.0%</td><td>161,894</td><td>161,742</td><td>152</td><td>无</td></tr></tbody></table>
+
+<h2><span class="step">2. 把切片切成小窗</span></h2>
+<p>每个细胞按质心落入边长 400 µm 的方格。少于 30 个细胞的方格去掉，相当于原文里丢掉组织太少的图块。三张切片一共 785 个小窗。相邻小窗属于同一模式的比例是 74.7%，用来看这些模式在组织里是成片的还是散点。</p>
+
+<h2><span class="step">3. 小窗特征</span></h2>
+<p>每个小窗的特征是保留细胞类型的比例，加起来等于 1。三张切片使用同一套类型。某张切片没有的类型，比例记为 0。这样后面的模式编号在三张切片上是同一个东西。</p>
+
+<h2><span class="step">4. 细簇</span></h2>
+<p>对全部小窗做 k-means。k 从 6 试到 20。每次在固定的 4000 个小窗（不足则全部）上计算轮廓系数，只有比当前选择高出 0.01 才换成更大的 k。选中的细簇数是 6。</p>
+<p>k=6 → 0.409, k=8 → 0.373, k=10 → 0.353, k=12 → 0.343, k=14 → 0.335, k=16 → 0.351, k=18 → 0.321, k=20 → 0.336</p>
+<img src="figures/silhouette.png" alt="不同细簇数的轮廓系数">
+
+<h2><span class="step">5. 合并成模式</span></h2>
+<p>每个细簇取成员小窗的平均组成。对这些平均向量做标准化，再用对角协方差的高斯混合去拟合。组数从 2 试到细簇数减 1，并且不超过 8，取得分最低的 BIC。选中 5 个模式，按包含细胞数从多到少称为 P1、P2……。细簇之间的相关矩阵只用来展示哪些细簇被放在一起，不作为混合模型的输入：相关矩阵的行数和列数相同，满协方差估不稳。</p>
+<p>G=2 → 246, G=3 → 161, G=4 → 43, G=5 → -59</p>
+<p>BIC 一直降到搜索上限。上限由细簇个数决定，所以这次合并很少：多数细簇各自留成一个模式。</p>
+<img src="figures/bic.png" alt="不同模式数的 BIC">
+<img src="figures/fine_correlation.png" alt="细簇平均组成的相关矩阵">
+<table><thead><tr><th>模式</th><th>包含的细簇</th><th>小窗</th><th>细胞</th><th>主要细胞类型</th></tr></thead><tbody><tr><td>P1</td><td>F0</td><td>222</td><td>225,414</td><td>epi 55.0%</td></tr><tr><td>P2</td><td>F2</td><td>195</td><td>171,726</td><td>nkt 22.4%、epi 16.8%</td></tr><tr><td>P3</td><td>F1 F4</td><td>215</td><td>87,147</td><td>endo 33.9%、fib 19.8%</td></tr><tr><td>P4</td><td>F5</td><td>77</td><td>54,156</td><td>fib_SYNPO2 20.4%、cil 16.7%</td></tr><tr><td>P5</td><td>F3</td><td>76</td><td>24,570</td><td>endo 42.0%、epi? 26.6%</td></tr></tbody></table>
+<img src="figures/pattern_composition.png" alt="每个模式的细胞类型比例">
+
+<h2><span class="step">6. 每张切片的模式组成</span></h2>
+<p>一张切片的向量是各个模式所占的细胞比例。下表是这次运行的结果。三张切片来自三个公开实验、各一个供体，切片之间的相关只能描述这三张片子，不能当成患者分型。</p>
+<table><thead><tr><th>切片</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th></tr></thead><tbody><tr><td>5k</td><td>23.0%</td><td>24.3%</td><td>32.0%</td><td>20.7%</td><td>0.0%</td></tr><tr><td>lc</td><td>20.0%</td><td>63.3%</td><td>0.0%</td><td>0.0%</td><td>16.6%</td></tr><tr><td>luad</td><td>85.0%</td><td>10.2%</td><td>3.8%</td><td>1.0%</td><td>0.0%</td></tr></tbody></table>
+<img src="figures/slice_patterns.png" alt="三张切片的模式比例">
+<p>切片之间的 Pearson 相关：</p>
+<table><thead><tr><th>切片</th><th>5k</th><th>lc</th><th>luad</th></tr></thead><tbody><tr><td>5k</td><td>1.00</td><td>-0.00</td><td>0.20</td></tr><tr><td>lc</td><td>-0.00</td><td>1.00</td><td>0.09</td></tr><tr><td>luad</td><td>0.20</td><td>0.09</td><td>1.00</td></tr></tbody></table>
+<img src="figures/space_5k.png" alt="5k 切片上的模式">
+<img src="figures/space_lc.png" alt="lc 切片上的模式">
+<img src="figures/space_luad.png" alt="luad 切片上的模式">
+
+<h2><span class="step">7. 模式里的转录组簇</span></h2>
+<p>Seurat 分辨率 0.3 的簇编号只在各自分片内部有意义。下表是每个模式里细胞数最多的三个转录组簇。</p>
+<table><thead><tr><th>切片</th><th>模式</th><th>细胞</th><th>主要转录组簇</th></tr></thead><tbody><tr><td>5k</td><td>P1</td><td>58,357</td><td>簇 1 36.0%，簇 7 12.8%，簇 0 12.4%</td></tr><tr><td>5k</td><td>P2</td><td>61,560</td><td>簇 0 24.5%，簇 1 16.2%，簇 4 11.6%</td></tr><tr><td>5k</td><td>P3</td><td>81,061</td><td>簇 2 34.0%，簇 3 17.8%，簇 9 10.9%</td></tr><tr><td>5k</td><td>P4</td><td>52,534</td><td>簇 5 21.1%，簇 8 16.1%，簇 3 13.8%</td></tr><tr><td>lc</td><td>P1</td><td>29,600</td><td>簇 0 47.4%，簇 1 13.3%，簇 2 11.7%</td></tr><tr><td>lc</td><td>P2</td><td>93,589</td><td>簇 1 19.8%，簇 2 16.5%，簇 0 15.3%</td></tr><tr><td>lc</td><td>P5</td><td>24,570</td><td>簇 3 42.0%，簇 5 23.7%，簇 2 13.5%</td></tr><tr><td>luad</td><td>P1</td><td>137,457</td><td>簇 0 23.6%，簇 1 22.2%，簇 4 12.7%</td></tr><tr><td>luad</td><td>P2</td><td>16,577</td><td>簇 2 29.2%，簇 3 13.1%，簇 8 11.1%</td></tr><tr><td>luad</td><td>P3</td><td>6,086</td><td>簇 3 30.0%，簇 6 23.6%，簇 9 17.2%</td></tr><tr><td>luad</td><td>P4</td><td>1,622</td><td>簇 12 36.3%，簇 2 13.6%，簇 3 11.6%</td></tr></tbody></table>
+
+<h2>复现</h2>
+<p>在放有 <code>data/GHIST_input</code> 和三份 <code>data/centroids/*.csv.gz</code> 的目录运行：</p>
+<p><code>python -m annotile run --root . --out results</code></p>
+<p><code>python -m annotile report --result results/summary.json --docs docs</code></p>
+<p>页面上的数字和 <code>results/summary.json</code> 是同一次运行写出来的。</p>
+</main>
+</body>
+</html>
