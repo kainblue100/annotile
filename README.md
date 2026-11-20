@@ -1,10 +1,10 @@
 # Annotile
 
+说明页直接打开：<https://kainblue100.github.io/annotile/>
+
 Annotile 把注释好的空间切片聚成组织模式。小窗的特征是细胞类型比例，对应 HIPO 流程里的图块特征，并多出细胞注释这一维。
 
 Zhang、Liu、Chen 等，Genome Medicine，2025。DOI [10.1186/s13073-025-01526-5](https://doi.org/10.1186/s13073-025-01526-5)。
-
-流程说明和这次三张肺 Xenium 切片的每一步结果在 [介绍页](docs/index.html)。
 
 ## 数据
 
