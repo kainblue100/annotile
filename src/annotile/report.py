@@ -197,6 +197,9 @@ def render(summary: dict) -> str:
 {_table(["模式", "切片", "细簇", "小块边长", "细胞"], volume_rows)}
 <img src="figures/pattern_volume.png" alt="每个模式的俯视、侧面和截面">
 <p><a href="volume.html">旋转查看这八个模型</a>。那里把深度放大了 4 倍，否则 10 µm 的厚度贴在几十微米宽的组织上几乎是一条线。球的半径没有被放大。</p>
+<p>下面是用 Blender Cycles 渲染的同一批细胞。玻璃盒后面是这块组织自己的 H&amp;E。细胞仍用类型半径，深度同样放大了 4 倍。近景把每个细胞画成半透明的膜、细胞质和核，颜色收成这类合成细胞常用的紫红色。这是重建结果的可视化，膜的凹凸不是从切片里分割出来的轮廓。</p>
+<img src="figures/blender_volume.png" alt="八个模式的玻璃盒渲染">
+<img src="figures/blender_closeup.png" alt="八个模式的细胞近景">
 
 <h2><span class="step">6. 每张切片的模式组成</span></h2>
 <p>一张切片的向量是各个模式所占的细胞比例。下表是这次运行的结果。三张切片来自三个公开实验、各一个供体，切片之间的相关只能描述这三张片子，不能当成患者分型。</p>
