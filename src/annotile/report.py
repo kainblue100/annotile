@@ -209,6 +209,8 @@ def render(summary: dict) -> str:
 <img src="figures/trajectory.png" alt="三张切片的进化树">
 <video src="figures/evolution.mp4" controls playsinline poster="figures/trajectory.png"></video>
 <p>视频按 5k、lc、luad 播放红枝。玻璃盒里的细胞从一块组织的质心变到下一块，颜色和大小跟着细胞类型变。深度放大 4 倍。用的是 EEVEE。这是路径的可视化，细胞没有跨模式追踪。</p>
+<p>同一套 785 个小窗再降到二维。每个点是一个小窗，颜色是模式，大点是该模式全部分窗的中心。灰线和红线是上面的进化树，画到这两个坐标里；红线仍是视频里的那一支。t-SNE 用困惑度 30、PCA 初始化和种子 42。UMAP 用 15 个邻居、min_dist 0.1 和种子 42。线表示切片上相邻，不表示这两个图里的距离。P2 在两张图里都单独成团，P1 和 P3 挨在一起，P4 自成一大团，P6、P7、P8 是小团。</p>
+<img src="figures/pattern_embedding.png" alt="模式在 t-SNE 和 UMAP 中的位置">
 
 <h2><span class="step">6. 每张切片的模式组成</span></h2>
 <p>一张切片的向量是各个模式所占的细胞比例。下表是这次运行的结果。三张切片来自三个公开实验、各一个供体，切片之间的相关只能描述这三张片子，不能当成患者分型。</p>
