@@ -97,41 +97,91 @@ def _expression() -> tuple[dict[str, dict[str, float]], list[str]]:
     return table, genes
 
 
+def _children(graph: dict[str, list[tuple[str, float]]], root: str, pseudotime: dict[str, float]) -> dict[str, list[str]]:
+    distance = {root: 0.0}
+    previous = {root: ""}
+    pending = set(graph)
+    while pending:
+        node = min(pending, key=lambda name: distance.get(name, 1e18))
+        if node not in distance:
+            break
+        pending.remove(node)
+        for nxt, weight in graph[node]:
+            cand = distance[node] + weight
+            if cand < distance.get(nxt, 1e18):
+                distance[nxt] = cand
+                previous[nxt] = node
+    children: dict[str, list[str]] = defaultdict(list)
+    for node, parent in previous.items():
+        if parent:
+            children[parent].append(node)
+    for parent in children:
+        children[parent].sort(key=lambda name: pseudotime.get(name, 0.0))
+    return children
+
+
+def _leaves(children: dict[str, list[str]], root: str) -> int:
+    kids = children.get(root, [])
+    if not kids:
+        return 1
+    return sum(_leaves(children, kid) for kid in kids)
+
+
+def _place(node: str, children: dict[str, list[str]], depth: int, cursor: list[int], pos: dict[str, tuple[float, float]]) -> None:
+    kids = children.get(node, [])
+    if not kids:
+        pos[node] = (float(depth), float(cursor[0]))
+        cursor[0] += 1
+        return
+    for kid in kids:
+        _place(kid, children, depth + 1, cursor, pos)
+    pos[node] = (float(depth), sum(pos[kid][1] for kid in kids) / len(kids))
+
+
 def _draw(slices: list[dict], out: Path) -> None:
-    width, height = 1100, 280 * len(slices) + 40
-    canvas = Image.new("RGB", (width, height), (255, 255, 255))
+    title = _font(26)
+    label = _font(22)
+    small = _font(16)
+    panels = []
+    for item in slices:
+        pos: dict[str, tuple[float, float]] = {}
+        _place(item["root_window"]["pattern"], item["children"], 0, [0], pos)
+        panels.append((item, pos, _leaves(item["children"], item["root_window"]["pattern"])))
+    height = 36 + sum(70 + max(leaves, 1) * 92 for _item, _pos, leaves in panels)
+    canvas = Image.new("RGB", (1080, height), (255, 255, 255))
     draw = ImageDraw.Draw(canvas)
-    title = _font(22)
-    label = _font(20)
-    small = _font(15)
-    for row, item in enumerate(slices):
-        top = 30 + row * 280
-        draw.text((24, top), item["slice"], fill=(20, 20, 20), font=title)
-        nodes = item["patterns"]
-        if len(nodes) == 1:
-            positions = {nodes[0]["pattern"]: (180, top + 120)}
-        else:
-            times = [node["pseudotime"] for node in nodes]
-            span = max(times) - min(times) or 1.0
-            positions = {}
-            for node in nodes:
-                x = 140 + (node["pseudotime"] - min(times)) / span * 820
-                positions[node["pattern"]] = (x, top + 120)
-        path_edges = set()
-        for left, right in zip(item["main_path"], item["main_path"][1:]):
-            path_edges.add(tuple(sorted((left, right))))
-        for edge in item["edges"]:
-            a = positions[edge["left"]]
-            b = positions[edge["right"]]
-            key = tuple(sorted((edge["left"], edge["right"])))
-            color = (180, 60, 40) if key in path_edges else (170, 170, 170)
-            draw.line([a, b], fill=color, width=6 if key in path_edges else 2)
-        for node in nodes:
-            x, y = positions[node["pattern"]]
-            color = COLORS[node["pattern"]]
-            draw.ellipse((x - 26, y - 26, x + 26, y + 26), fill=color, outline=(30, 30, 30))
-            draw.text((x - 14, y - 12), node["pattern"], fill=(255, 255, 255), font=label)
-            draw.text((x - 30, y + 32), f"{node['pseudotime']:.2f}", fill=(60, 60, 60), font=small)
+    top = 28
+    trunk = {(left, right) for item, _pos, _leaves in panels for left, right in zip(item["main_path"], item["main_path"][1:])}
+    for item, pos, leaves in panels:
+        draw.text((28, top), item["slice"], fill=(20, 20, 20), font=title)
+        origin_y = top + 58
+        points = {}
+        for name, (depth, row) in pos.items():
+            points[name] = (170 + depth * 210, origin_y + row * 92)
+        root = item["root_window"]["pattern"]
+        for parent, kids in item["children"].items():
+            if not kids:
+                continue
+            px, py = points[parent]
+            fork = px + 78
+            child_y = [points[kid][1] for kid in kids]
+            draw.line([(px + 28, py), (fork, py)], fill=(150, 150, 150), width=3)
+            if len(kids) > 1:
+                draw.line([(fork, min(child_y)), (fork, max(child_y))], fill=(150, 150, 150), width=3)
+            for kid in kids:
+                kx, ky = points[kid]
+                color = (176, 58, 46) if (parent, kid) in trunk else (150, 150, 150)
+                width = 7 if (parent, kid) in trunk else 3
+                draw.line([(fork, ky), (kx - 30, ky)], fill=color, width=width)
+                if len(kids) > 1:
+                    draw.line([(fork, py), (fork, ky)], fill=color, width=width)
+        for name, (x, y) in points.items():
+            color = COLORS[name]
+            draw.ellipse((x - 28, y - 28, x + 28, y + 28), fill=color, outline=(30, 30, 30), width=2)
+            draw.text((x - 14, y - 12), name, fill=(255, 255, 255), font=label)
+            when = next(row["pseudotime"] for row in item["patterns"] if row["pattern"] == name)
+            draw.text((x - 22, y + 34), f"{when:.2f}", fill=(70, 70, 70), font=small)
+        top += 70 + max(leaves, 1) * 92
     canvas.save(out)
 
 
@@ -202,12 +252,11 @@ def main() -> None:
             graph[left].append((right, float(np.median(weights))))
             graph[right].append((left, float(np.median(weights))))
         root_pattern = rows[root_local]["pattern"]
-        reachable = [item["pattern"] for item in pattern_rows if item["pattern"] in graph or item["pattern"] == root_pattern]
-        tip = max(reachable, key=lambda name: next(item["pseudotime"] for item in pattern_rows if item["pattern"] == name))
-        for item in pattern_rows:
-            if item["pattern"] not in graph and item["pattern"] != root_pattern:
-                graph[item["pattern"]] = []
-            graph.setdefault(item["pattern"], [])
+        graph.setdefault(root_pattern, [])
+        pseudotime = {item["pattern"]: item["pseudotime"] for item in pattern_rows}
+        children = _children(graph, root_pattern, pseudotime)
+        reachable = [root_pattern, *pseudotime]
+        tip = max(pseudotime, key=lambda name: pseudotime[name])
         order = _path(graph, root_pattern, tip)
         gradient = []
         for gene in GENES:
@@ -225,6 +274,7 @@ def main() -> None:
             "windows": len(rows),
             "patterns": pattern_rows,
             "edges": edges,
+            "children": {parent: kids for parent, kids in children.items()},
             "main_path": order,
             "expression_along_path": gradient,
         })

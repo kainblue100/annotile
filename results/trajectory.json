@@ -96,6 +96,16 @@
           "feature_distance": 8.0319
         }
       ],
+      "children": {
+        "P7": [
+          "P1",
+          "P6",
+          "P4"
+        ],
+        "P1": [
+          "P3"
+        ]
+      },
       "main_path": [
         "P7",
         "P4"
@@ -195,6 +205,12 @@
           "feature_distance": 7.4586
         }
       ],
+      "children": {
+        "P5": [
+          "P3",
+          "P1"
+        ]
+      },
       "main_path": [
         "P5",
         "P1"
@@ -330,6 +346,16 @@
           "feature_distance": 7.6646
         }
       ],
+      "children": {
+        "P7": [
+          "P1",
+          "P2"
+        ],
+        "P2": [
+          "P6",
+          "P8"
+        ]
+      },
       "main_path": [
         "P7",
         "P2",
