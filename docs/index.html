@@ -92,6 +92,15 @@
 <img src="figures/transition_luad.png" alt="luad 切片上的模式转移">
 <video src="figures/evolution.mp4" controls playsinline poster="figures/trajectory.png"></video>
 <p>视频按 5k、lc、luad 播放红枝。玻璃盒里的细胞从一块组织的质心变到下一块，颜色和大小跟着细胞类型变。深度放大 4 倍。用的是 EEVEE。玻璃盒后面是 BodyParts3D 的成人肺叶模型，来自 Database Center for Life Science，许可是 CC BY-SA 2.1 JP，只作为器官外形。这三张 Xenium 切片来自三个供体，不是同一肺的连续切片，所以没有把它们叠成 <a href="https://kainblue100.github.io/coda-mouse-lung-volume/">小鼠肺体积</a>那种序列重建。细胞没有跨模式追踪。</p>
+<h2><span class="step">同一例肺癌的连续切片</span></h2>
+<p>公开数据里有一套人类肺癌连续切片：Pentimalli 等人，Cell Systems 2025。一块非小细胞肺癌蜡块切了 34 张连续 5 µm 切片，第 4、10、16、22、28、34 张做了 CosMx，层间距 30 µm，用 STIM 配准。坐标在 <a href="https://doi.org/10.5281/zenodo.7899173">Zenodo 10.5281/zenodo.7899173</a>。下图用的是他们公布的配准坐标，5.6 像素等于 1 µm。六层共 340,644 个细胞位置，范围约 4.0 mm × 4.0 mm × 150 µm。相邻两层、80 µm 格子上的细胞密度 Pearson 相关依次是 0.69、0.49、0.50、0.67、0.54。空白区在六层里都还在，说明配准后的结构能对上。</p>
+<p>这六层是同一例肿瘤，没有和 5k、lc、luad 叠到一起，也没有把 P1–P8 标上去。坐标表只有位置，细胞类型在他们的 Seurat 对象里，这次没有读。电子显微镜和 CT 没有拿来顶替：连续切片本身是公开的，CT 给不出这些小窗里的细胞组成。</p>
+<img src="figures/serial_nsclc.png" alt="同一例非小细胞肺癌的六张配准切片">
+<h2><span class="step">程序可以叠在同一个模式上</span></h2>
+<p>公众号那篇讲的是 Yan 等人，Nature 2026，三阴性乳腺癌化疗前的四层：archetype 是患者级癌细胞程序，metaprogram 是同一肿瘤里可叠加的表达程序，ecotype 是患者之间哪些状态一起出现或一起缺失，spatial niche 才是组织坐标上真正相邻的局部组成。Ecotype 不等于空间相邻。原文是治疗前活检和后来病理完全缓解的关联，癌种不是肺。</p>
+<p>这里没有照做 archetype 和 ecotype。供体只有 3 个，没有化疗结局，153 个共有基因里没有他们用的 ISG15、IFI27、IFIT3 和 HLA-DRA。CXCL9 和 STC2 各是一个基因，不是他们的干扰素程序或低氧程序。用得上的是 niche 这一层，以及程序可以叠加：一个模式不必只属于一种状态。</p>
+<p>下图的数是每个基因在 8 个模式上的 z 分数，再在一组基因里平均。P2 上皮最高（+1.38），增殖并不高（−0.10）。P3 的增殖（+2.59）、基质（+1.32）和 CXCL9（+2.01）同时高；P3 在 lc 上占了大部分细胞，这个分数主要来自 lc。P5 内皮 +1.95，P8 内皮 +1.14。视频那一支的细胞比例：5k 从 P7 到 P4，上皮 0.47 降到 0.21，内皮 0.06 升到 0.34。lc 从 P5 到 P1，上皮 0.27 升到 0.48，内皮 0.43 降到 0.07，淋巴样细胞 0.13 升到 0.26。luad 从 P7 到 P2 再到 P8，上皮是 0.53、0.59、0.11，到 P8 时内皮升到 0.41。</p>
+<img src="figures/niche_programs.png" alt="八个模式上可叠加的表达程序">
 <p>同一套 785 个小窗再降到二维。每个点是一个小窗，颜色是模式，大点是该模式全部分窗的中心。灰线和红线是上面的进化树，画到这两个坐标里；红线仍是视频里的那一支。t-SNE 用困惑度 30、PCA 初始化和种子 42。UMAP 用 15 个邻居、min_dist 0.1 和种子 42。线表示切片上相邻，不表示这两个图里的距离。P2 在两张图里都单独成团，P1 和 P3 挨在一起，P4 自成一大团，P6、P7、P8 是小团。</p>
 <img src="figures/pattern_embedding.png" alt="模式在 t-SNE 和 UMAP 中的位置">
 

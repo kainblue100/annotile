@@ -1,0 +1,203 @@
+{
+  "source": "Yan et al., Nature 2026, spatial niche rather than cross-patient ecotype",
+  "not_fit": "No archetype or ecotype was fit. Three donors, no treatment outcome, and the shared panel lacks ISG15, IFI27, IFIT3 and HLA-DRA.",
+  "unit": "mean z-score of the named genes across the eight patterns",
+  "patterns": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8"
+  ],
+  "modules": {
+    "Epithelium": {
+      "genes": [
+        "EPCAM",
+        "MALL",
+        "SOX2"
+      ],
+      "scores": {
+        "P1": 0.243,
+        "P2": 1.381,
+        "P3": 0.09,
+        "P4": -0.836,
+        "P5": -0.069,
+        "P6": -0.807,
+        "P7": 0.568,
+        "P8": -0.57
+      }
+    },
+    "Proliferation": {
+      "genes": [
+        "MKI67",
+        "UBE2C"
+      ],
+      "scores": {
+        "P1": -0.091,
+        "P2": -0.1,
+        "P3": 2.589,
+        "P4": -0.609,
+        "P5": -0.187,
+        "P6": -0.577,
+        "P7": -0.543,
+        "P8": -0.482
+      }
+    },
+    "Stroma": {
+      "genes": [
+        "COL5A2",
+        "THY1",
+        "PDGFRA"
+      ],
+      "scores": {
+        "P1": 0.017,
+        "P2": -0.072,
+        "P3": 1.319,
+        "P4": -0.891,
+        "P5": 0.384,
+        "P6": -0.206,
+        "P7": -0.729,
+        "P8": 0.179
+      }
+    },
+    "Endothelium": {
+      "genes": [
+        "PECAM1",
+        "CD34",
+        "CD93",
+        "CLEC14A"
+      ],
+      "scores": {
+        "P1": -0.705,
+        "P2": -0.436,
+        "P3": 0.121,
+        "P4": -0.253,
+        "P5": 1.945,
+        "P6": -0.768,
+        "P7": -1.04,
+        "P8": 1.137
+      }
+    },
+    "Macrophage": {
+      "genes": [
+        "CD68",
+        "CD163",
+        "CD14"
+      ],
+      "scores": {
+        "P1": 0.832,
+        "P2": -0.298,
+        "P3": 0.694,
+        "P4": 0.227,
+        "P5": 0.536,
+        "P6": -0.635,
+        "P7": -0.455,
+        "P8": -0.9
+      }
+    },
+    "CXCL9": {
+      "genes": [
+        "CXCL9"
+      ],
+      "scores": {
+        "P1": 1.237,
+        "P2": -0.007,
+        "P3": 2.013,
+        "P4": -0.859,
+        "P5": -0.249,
+        "P6": -0.744,
+        "P7": -0.478,
+        "P8": -0.914
+      }
+    },
+    "STC2": {
+      "genes": [
+        "STC2"
+      ],
+      "scores": {
+        "P1": -0.554,
+        "P2": 1.444,
+        "P3": 0.168,
+        "P4": 1.423,
+        "P5": 0.596,
+        "P6": -1.038,
+        "P7": -1.164,
+        "P8": -0.876
+      }
+    }
+  },
+  "path_composition": {
+    "5k": {
+      "P7": {
+        "cells": 15604,
+        "windows": 17,
+        "epithelium": 0.4665,
+        "macrophage": 0.0625,
+        "lymphoid": 0.1652,
+        "endothelium": 0.0597,
+        "fibroblast": 0.2133
+      },
+      "P4": {
+        "cells": 80623,
+        "windows": 185,
+        "epithelium": 0.2131,
+        "macrophage": 0.0886,
+        "lymphoid": 0.1109,
+        "endothelium": 0.3448,
+        "fibroblast": 0.2267
+      }
+    },
+    "lc": {
+      "P5": {
+        "cells": 25777,
+        "windows": 79,
+        "epithelium": 0.2712,
+        "macrophage": 0.144,
+        "lymphoid": 0.1341,
+        "endothelium": 0.4281,
+        "fibroblast": 0.0042
+      },
+      "P1": {
+        "cells": 16431,
+        "windows": 26,
+        "epithelium": 0.4759,
+        "macrophage": 0.1397,
+        "lymphoid": 0.2613,
+        "endothelium": 0.0687,
+        "fibroblast": 0.043
+      }
+    },
+    "luad": {
+      "P7": {
+        "cells": 1622,
+        "windows": 2,
+        "epithelium": 0.5321,
+        "macrophage": 0.0654,
+        "lymphoid": 0.1837,
+        "endothelium": 0.0475,
+        "fibroblast": 0.1492
+      },
+      "P2": {
+        "cells": 111092,
+        "windows": 95,
+        "epithelium": 0.5891,
+        "macrophage": 0.095,
+        "lymphoid": 0.1361,
+        "endothelium": 0.0395,
+        "fibroblast": 0.129
+      },
+      "P8": {
+        "cells": 2724,
+        "windows": 11,
+        "epithelium": 0.1142,
+        "macrophage": 0.0932,
+        "lymphoid": 0.0999,
+        "endothelium": 0.4148,
+        "fibroblast": 0.2584
+      }
+    }
+  }
+}
