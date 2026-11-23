@@ -74,6 +74,11 @@ def render(summary: dict) -> str:
         expression_rows.append(
             [gene] + [f"{values.get(item['pattern'], [])[index]:.2f}" for item in summary["patterns"]]
         )
+    volume = summary.get("volume") or {}
+    volume_rows = [
+        [item["pattern"], item["slice"], f"F{item['fine']}", f"{item['patch_um']:.0f} µm", str(item["cells"])]
+        for item in volume.get("patterns", [])
+    ]
     top_rows = []
     for item in summary["patterns"]:
         picked = (expression.get("top") or {}).get(item["pattern"], [])
@@ -187,6 +192,12 @@ def render(summary: dict) -> str:
 <img src="figures/fig2.png" alt="按原文图2排版的细簇、相关矩阵和代表性小窗">
 <img src="figures/fig2c.png" alt="每个模式的代表性小窗">
 
+<h2><span class="step">每个模式的三维模型</span></h2>
+<p>平面位置用的是这个模式里细胞最密的一块组织上的 Xenium 质心。细胞半径按类型给定。细胞中心只能落在 10 µm 厚的切片里，球与球不能互相穿透，这是 CellSqueeze3D 那类物理约束。每个球分成膜、细胞质和核，对应 Alon、Yu、Zhou 用来合成三维细胞的三个部分。下图从左到右是俯视、侧面和切过切片中平面的截面。侧面里灰色带是切片的厚度，细胞可以凸出切片，因为切片切过的是更大的细胞。</p>
+{_table(["模式", "切片", "细簇", "小块边长", "细胞"], volume_rows)}
+<img src="figures/pattern_volume.png" alt="每个模式的俯视、侧面和截面">
+<p><a href="volume.html">旋转查看这八个模型</a>。那里把深度放大了 4 倍，否则 10 µm 的厚度贴在几十微米宽的组织上几乎是一条线。球的半径没有被放大。</p>
+
 <h2><span class="step">6. 每张切片的模式组成</span></h2>
 <p>一张切片的向量是各个模式所占的细胞比例。下表是这次运行的结果。三张切片来自三个公开实验、各一个供体，切片之间的相关只能描述这三张片子，不能当成患者分型。</p>
 {_table(fraction_headers, fraction_rows)}
@@ -220,4 +231,7 @@ def write_site(result: Path, docs: Path) -> None:
     if figure_dst.exists():
         shutil.rmtree(figure_dst)
     shutil.copytree(figure_src, figure_dst)
+    volume_page = result.parent / "volume.html"
+    if volume_page.is_file():
+        shutil.copyfile(volume_page, docs / "volume.html")
     (docs / "index.html").write_text(render(summary), encoding="utf-8")

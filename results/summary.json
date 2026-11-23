@@ -1503,5 +1503,66 @@
         }
       ]
     }
+  },
+  "volume": {
+    "thickness_um": 10.0,
+    "patterns": [
+      {
+        "pattern": "P1",
+        "slice": "luad",
+        "fine": 8,
+        "patch_um": 40.0,
+        "cells": 54
+      },
+      {
+        "pattern": "P2",
+        "slice": "luad",
+        "fine": 3,
+        "patch_um": 40.0,
+        "cells": 49
+      },
+      {
+        "pattern": "P3",
+        "slice": "lc",
+        "fine": 1,
+        "patch_um": 40.0,
+        "cells": 35
+      },
+      {
+        "pattern": "P4",
+        "slice": "5k",
+        "fine": 0,
+        "patch_um": 40.0,
+        "cells": 37
+      },
+      {
+        "pattern": "P5",
+        "slice": "lc",
+        "fine": 5,
+        "patch_um": 40.0,
+        "cells": 26
+      },
+      {
+        "pattern": "P6",
+        "slice": "5k",
+        "fine": 4,
+        "patch_um": 40.0,
+        "cells": 29
+      },
+      {
+        "pattern": "P7",
+        "slice": "5k",
+        "fine": 6,
+        "patch_um": 40.0,
+        "cells": 36
+      },
+      {
+        "pattern": "P8",
+        "slice": "luad",
+        "fine": 9,
+        "patch_um": 80.0,
+        "cells": 45
+      }
+    ]
   }
 }

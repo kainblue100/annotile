@@ -311,7 +311,9 @@ def run(root: Path, out: Path, window_um: float = WINDOW_UM, min_cells: int = MI
     _write_tables(out, window, labels, summary, correlation, fine_to_pattern)
     _figures(fig_dir, window, labels, summary, correlation, fine_to_pattern, all_cells, window_um)
     from annotile.matrix import attach_expression
+    from annotile.volume import build_volumes
     attach_expression(root, window, summary, fig_dir)
+    build_volumes(window, all_cells, summary, fig_dir, out / "volume.html")
     (out / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     return summary
 

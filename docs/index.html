@@ -71,6 +71,12 @@
 <img src="figures/fig2.png" alt="按原文图2排版的细簇、相关矩阵和代表性小窗">
 <img src="figures/fig2c.png" alt="每个模式的代表性小窗">
 
+<h2><span class="step">每个模式的三维模型</span></h2>
+<p>平面位置用的是这个模式里细胞最密的一块组织上的 Xenium 质心。细胞半径按类型给定。细胞中心只能落在 10 µm 厚的切片里，球与球不能互相穿透，这是 CellSqueeze3D 那类物理约束。每个球分成膜、细胞质和核，对应 Alon、Yu、Zhou 用来合成三维细胞的三个部分。下图从左到右是俯视、侧面和切过切片中平面的截面。侧面里灰色带是切片的厚度，细胞可以凸出切片，因为切片切过的是更大的细胞。</p>
+<table><thead><tr><th>模式</th><th>切片</th><th>细簇</th><th>小块边长</th><th>细胞</th></tr></thead><tbody><tr><td>P1</td><td>luad</td><td>F8</td><td>40 µm</td><td>54</td></tr><tr><td>P2</td><td>luad</td><td>F3</td><td>40 µm</td><td>49</td></tr><tr><td>P3</td><td>lc</td><td>F1</td><td>40 µm</td><td>35</td></tr><tr><td>P4</td><td>5k</td><td>F0</td><td>40 µm</td><td>37</td></tr><tr><td>P5</td><td>lc</td><td>F5</td><td>40 µm</td><td>26</td></tr><tr><td>P6</td><td>5k</td><td>F4</td><td>40 µm</td><td>29</td></tr><tr><td>P7</td><td>5k</td><td>F6</td><td>40 µm</td><td>36</td></tr><tr><td>P8</td><td>luad</td><td>F9</td><td>80 µm</td><td>45</td></tr></tbody></table>
+<img src="figures/pattern_volume.png" alt="每个模式的俯视、侧面和截面">
+<p><a href="volume.html">旋转查看这八个模型</a>。那里把深度放大了 4 倍，否则 10 µm 的厚度贴在几十微米宽的组织上几乎是一条线。球的半径没有被放大。</p>
+
 <h2><span class="step">6. 每张切片的模式组成</span></h2>
 <p>一张切片的向量是各个模式所占的细胞比例。下表是这次运行的结果。三张切片来自三个公开实验、各一个供体，切片之间的相关只能描述这三张片子，不能当成患者分型。</p>
 <table><thead><tr><th>切片</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>P6</th><th>P7</th><th>P8</th></tr></thead><tbody><tr><td>5k</td><td>54.0%</td><td>0.0%</td><td>0.0%</td><td>31.8%</td><td>0.0%</td><td>8.0%</td><td>6.2%</td><td>0.0%</td></tr><tr><td>lc</td><td>11.1%</td><td>0.0%</td><td>71.4%</td><td>0.0%</td><td>17.4%</td><td>0.0%</td><td>0.0%</td><td>0.0%</td></tr><tr><td>luad</td><td>27.8%</td><td>68.7%</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td>0.8%</td><td>1.0%</td><td>1.7%</td></tr></tbody></table>
