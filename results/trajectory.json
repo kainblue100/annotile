@@ -1,0 +1,415 @@
+{
+  "method": "Within each section, pseudotime is the shortest path along windows that share a side. The step cost is Euclidean distance in the saved window features: cell-type fraction, 16 expression components, and H&E mean, spread, and texture. The root window is the one with the highest normal_epi + AT1 + AT2_like + cil fraction. A pattern edge is kept when at least 3 window borders carry it. The three sections are not joined.",
+  "references": [
+    "Pham et al., Nat Commun 2023, pseudo-time-space: a trajectory step has to be a spatial neighbor, and H&E morphology is part of the state",
+    "Ren et al., Nat Commun 2022, SpaceFlow: pseudotime on a graph that already contains spatial neighbors",
+    "Kueckelhaus et al., Nat Commun 2024, SPATA2: read the expression change along the spatial path",
+    "SpaTrack, Cell Systems 2025: transition cost combines expression distance and physical distance; separate donors are not one time course"
+  ],
+  "not_regvelo": "These Xenium matrices have no spliced or unspliced counts, so no RNA velocity was estimated",
+  "feature_file": "results/features.npy",
+  "feature_width": 41,
+  "slices": [
+    {
+      "slice": "5k",
+      "root_window": {
+        "ix": 7,
+        "iy": 13,
+        "pattern": "P7"
+      },
+      "root_score": 0.6976,
+      "reachable_windows": 403,
+      "windows": 403,
+      "patterns": [
+        {
+          "pattern": "P1",
+          "windows": 162,
+          "pseudotime": 0.6956,
+          "differentiated": 0.0243
+        },
+        {
+          "pattern": "P3",
+          "windows": 1,
+          "pseudotime": 0.9541,
+          "differentiated": 0.0
+        },
+        {
+          "pattern": "P4",
+          "windows": 185,
+          "pseudotime": 1.3176,
+          "differentiated": 0.2022
+        },
+        {
+          "pattern": "P6",
+          "windows": 38,
+          "pseudotime": 0.7522,
+          "differentiated": 0.0588
+        },
+        {
+          "pattern": "P7",
+          "windows": 17,
+          "pseudotime": 0.7708,
+          "differentiated": 0.4367
+        }
+      ],
+      "edges": [
+        {
+          "left": "P1",
+          "right": "P7",
+          "borders": 62,
+          "feature_distance": 8.9258
+        },
+        {
+          "left": "P1",
+          "right": "P3",
+          "borders": 4,
+          "feature_distance": 10.4767
+        },
+        {
+          "left": "P1",
+          "right": "P6",
+          "borders": 91,
+          "feature_distance": 6.5592
+        },
+        {
+          "left": "P6",
+          "right": "P7",
+          "borders": 15,
+          "feature_distance": 7.2189
+        },
+        {
+          "left": "P1",
+          "right": "P4",
+          "borders": 38,
+          "feature_distance": 4.6752
+        },
+        {
+          "left": "P4",
+          "right": "P6",
+          "borders": 64,
+          "feature_distance": 4.6663
+        },
+        {
+          "left": "P4",
+          "right": "P7",
+          "borders": 19,
+          "feature_distance": 8.0319
+        }
+      ],
+      "main_path": [
+        "P7",
+        "P4"
+      ],
+      "expression_along_path": [
+        {
+          "gene": "EPCAM",
+          "values": {
+            "P7": 2.059,
+            "P4": 0.885
+          }
+        },
+        {
+          "gene": "MKI67",
+          "values": {
+            "P7": 0.055,
+            "P4": 0.017
+          }
+        },
+        {
+          "gene": "UBE2C",
+          "values": {
+            "P7": 0.038,
+            "P4": 0.013
+          }
+        },
+        {
+          "gene": "EGFR",
+          "values": {
+            "P7": 1.109,
+            "P4": 0.533
+          }
+        },
+        {
+          "gene": "COL5A2",
+          "values": {
+            "P7": 0.308,
+            "P4": 0.231
+          }
+        },
+        {
+          "gene": "PECAM1",
+          "values": {
+            "P7": 0.698,
+            "P4": 2.182
+          }
+        }
+      ]
+    },
+    {
+      "slice": "lc",
+      "root_window": {
+        "ix": 0,
+        "iy": 0,
+        "pattern": "P5"
+      },
+      "root_score": 0.0,
+      "reachable_windows": 226,
+      "windows": 226,
+      "patterns": [
+        {
+          "pattern": "P1",
+          "windows": 26,
+          "pseudotime": 1.4355,
+          "differentiated": 0.0
+        },
+        {
+          "pattern": "P3",
+          "windows": 121,
+          "pseudotime": 1.3228,
+          "differentiated": 0.0
+        },
+        {
+          "pattern": "P5",
+          "windows": 79,
+          "pseudotime": 0.517,
+          "differentiated": 0.0
+        }
+      ],
+      "edges": [
+        {
+          "left": "P1",
+          "right": "P5",
+          "borders": 12,
+          "feature_distance": 6.9476
+        },
+        {
+          "left": "P1",
+          "right": "P3",
+          "borders": 68,
+          "feature_distance": 6.8232
+        },
+        {
+          "left": "P3",
+          "right": "P5",
+          "borders": 28,
+          "feature_distance": 7.4586
+        }
+      ],
+      "main_path": [
+        "P5",
+        "P1"
+      ],
+      "expression_along_path": [
+        {
+          "gene": "EPCAM",
+          "values": {
+            "P5": 1.835,
+            "P1": 2.964
+          }
+        },
+        {
+          "gene": "MKI67",
+          "values": {
+            "P5": 0.275,
+            "P1": 0.28
+          }
+        },
+        {
+          "gene": "UBE2C",
+          "values": {
+            "P5": 0.159,
+            "P1": 0.245
+          }
+        },
+        {
+          "gene": "EGFR",
+          "values": {
+            "P5": 1.018,
+            "P1": 1.666
+          }
+        },
+        {
+          "gene": "COL5A2",
+          "values": {
+            "P5": 1.448,
+            "P1": 0.746
+          }
+        },
+        {
+          "gene": "PECAM1",
+          "values": {
+            "P5": 3.698,
+            "P1": 1.343
+          }
+        }
+      ]
+    },
+    {
+      "slice": "luad",
+      "root_window": {
+        "ix": 16,
+        "iy": 3,
+        "pattern": "P7"
+      },
+      "root_score": 0.4068,
+      "reachable_windows": 156,
+      "windows": 156,
+      "patterns": [
+        {
+          "pattern": "P1",
+          "windows": 39,
+          "pseudotime": 0.7868,
+          "differentiated": 0.007
+        },
+        {
+          "pattern": "P2",
+          "windows": 95,
+          "pseudotime": 0.9952,
+          "differentiated": 0.0023
+        },
+        {
+          "pattern": "P6",
+          "windows": 9,
+          "pseudotime": 1.5065,
+          "differentiated": 0.0
+        },
+        {
+          "pattern": "P7",
+          "windows": 2,
+          "pseudotime": 0.0594,
+          "differentiated": 0.368
+        },
+        {
+          "pattern": "P8",
+          "windows": 11,
+          "pseudotime": 1.6632,
+          "differentiated": 0.1033
+        }
+      ],
+      "edges": [
+        {
+          "left": "P1",
+          "right": "P2",
+          "borders": 73,
+          "feature_distance": 7.2961
+        },
+        {
+          "left": "P1",
+          "right": "P7",
+          "borders": 5,
+          "feature_distance": 10.5735
+        },
+        {
+          "left": "P2",
+          "right": "P7",
+          "borders": 3,
+          "feature_distance": 10.6553
+        },
+        {
+          "left": "P1",
+          "right": "P6",
+          "borders": 8,
+          "feature_distance": 11.584
+        },
+        {
+          "left": "P2",
+          "right": "P6",
+          "borders": 8,
+          "feature_distance": 8.6126
+        },
+        {
+          "left": "P6",
+          "right": "P8",
+          "borders": 5,
+          "feature_distance": 10.8544
+        },
+        {
+          "left": "P2",
+          "right": "P8",
+          "borders": 14,
+          "feature_distance": 7.6646
+        }
+      ],
+      "main_path": [
+        "P7",
+        "P2",
+        "P8"
+      ],
+      "expression_along_path": [
+        {
+          "gene": "EPCAM",
+          "values": {
+            "P7": 2.059,
+            "P2": 4.315,
+            "P8": 1.27
+          }
+        },
+        {
+          "gene": "MKI67",
+          "values": {
+            "P7": 0.055,
+            "P2": 0.302,
+            "P8": 0.063
+          }
+        },
+        {
+          "gene": "UBE2C",
+          "values": {
+            "P7": 0.038,
+            "P2": 0.215,
+            "P8": 0.088
+          }
+        },
+        {
+          "gene": "EGFR",
+          "values": {
+            "P7": 1.109,
+            "P2": 1.911,
+            "P8": 0.606
+          }
+        },
+        {
+          "gene": "COL5A2",
+          "values": {
+            "P7": 0.308,
+            "P2": 0.735,
+            "P8": 0.478
+          }
+        },
+        {
+          "gene": "PECAM1",
+          "values": {
+            "P7": 0.698,
+            "P2": 1.967,
+            "P8": 4.033
+          }
+        }
+      ]
+    }
+  ],
+  "video_segments": [
+    {
+      "slice": "5k",
+      "path": [
+        "P7",
+        "P4"
+      ]
+    },
+    {
+      "slice": "lc",
+      "path": [
+        "P5",
+        "P1"
+      ]
+    },
+    {
+      "slice": "luad",
+      "path": [
+        "P7",
+        "P2",
+        "P8"
+      ]
+    }
+  ],
+  "donors": "Three sections, one donor each. A path is the similarity order inside that section. It is not a lineage measured in one patient, and it is not a path across donors."
+}
