@@ -52,13 +52,14 @@ def _match(barcodes: list[str], cell_ids: pd.Series) -> tuple[np.ndarray, float]
     return rows.fillna(-1).to_numpy().astype(np.int32), float(matched.mean())
 
 
-def expression_block(root: Path, windows: pd.DataFrame, window_um: float = WINDOW_UM) -> tuple[np.ndarray | None, dict]:
+def window_gene_means(root: Path, windows: pd.DataFrame, window_um: float = WINDOW_UM):
+    """Per-window mean of log1p(CP10k) on genes shared by every slice."""
     loaded = []
     info = {"shared_genes": 0, "slices": {}}
     for spec in SLICES:
         path = root / spec.matrix
         if not path.is_file():
-            return None, info
+            return None, [], info
         barcodes, names, matrix = read_matrix(path)
         cells, _meta = load_slice(root, spec)
         rows, rate = _match(barcodes, cells["cell_id"])
@@ -75,7 +76,7 @@ def expression_block(root: Path, windows: pd.DataFrame, window_um: float = WINDO
     shared_names = sorted(shared)
     info["shared_genes"] = len(shared_names)
     if not shared_names:
-        return None, info
+        return None, [], info
     window_keys = (windows["slice"] + "|" + windows["ix"].astype(int).astype(str) + "|" + windows["iy"].astype(int).astype(str)).tolist()
     key_to_i = {key: i for i, key in enumerate(window_keys)}
     totals = np.zeros((len(windows), len(shared_names)), dtype=np.float64)
@@ -95,9 +96,86 @@ def expression_block(root: Path, windows: pd.DataFrame, window_um: float = WINDO
         np.add.at(counts, dest, 1)
     counts = np.maximum(counts, 1.0)
     means = totals / counts[:, None]
+    return means, shared_names, info
+
+
+def expression_block(root: Path, windows: pd.DataFrame, window_um: float = WINDOW_UM) -> tuple[np.ndarray | None, dict]:
+    means, _names, info = window_gene_means(root, windows, window_um)
+    if means is None:
+        return None, info
     components = min(16, means.shape[0] - 1, means.shape[1])
     if components < 2:
         return means, info
     scores = PCA(n_components=components, random_state=42).fit_transform(means)
     info["expression_components"] = int(components)
     return scores, info
+
+
+def attach_expression(root: Path, windows: pd.DataFrame, summary: dict, fig_dir: Path) -> None:
+    """Cell-weighted mean expression of each pattern, plus the genes raised in that pattern."""
+    means, genes, _info = window_gene_means(root, windows)
+    order = [item["pattern"] for item in summary["patterns"]]
+    if means is None or not genes:
+        summary["expression"] = {"unit": "log1p(CP10k)", "shared_genes": 0, "genes": [], "values": {}, "top": {}}
+        return
+    weight = windows["n_cells"].to_numpy(dtype=np.float64)
+    matrix = []
+    for pattern in order:
+        mask = (windows["pattern"].astype(str) == pattern).to_numpy()
+        picked = weight[mask]
+        matrix.append((means[mask] * picked[:, None]).sum(axis=0) / picked.sum())
+    matrix = np.vstack(matrix)
+    chosen: list[str] = []
+    seen: set[str] = set()
+    tops: dict[str, list[dict]] = {}
+    for i, pattern in enumerate(order):
+        others = np.delete(matrix, i, axis=0).mean(axis=0)
+        rank = np.argsort(matrix[i] - others)[::-1]
+        picked = []
+        for j in rank[:8]:
+            gene = genes[int(j)]
+            picked.append({
+                "gene": gene,
+                "value": round(float(matrix[i, j]), 3),
+                "other_mean": round(float(others[j]), 3),
+            })
+            if gene not in seen:
+                chosen.append(gene)
+                seen.add(gene)
+        tops[pattern] = picked
+    columns = [genes.index(gene) for gene in chosen]
+    heat = matrix[:, columns]
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    _draw_expression(fig_dir / "pattern_expression.png", order, chosen, heat)
+    pd.DataFrame(np.round(heat, 3), index=order, columns=chosen).to_csv(fig_dir.parent / "pattern_expression.csv")
+    summary["expression"] = {
+        "unit": "log1p(CP10k)",
+        "shared_genes": len(genes),
+        "genes": chosen,
+        "values": {
+            pattern: [round(float(value), 3) for value in row]
+            for pattern, row in zip(order, heat)
+        },
+        "top": tops,
+    }
+
+
+def _draw_expression(path: Path, patterns: list[str], genes: list[str], values: np.ndarray) -> None:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(max(8.5, len(patterns) * 1.15), max(6.0, len(genes) * 0.32)), facecolor="white")
+    image = ax.imshow(values.T, cmap="YlOrRd", aspect="auto")
+    ax.set_xticks(range(len(patterns)), patterns)
+    ax.set_yticks(range(len(genes)), genes, fontsize=8)
+    limit = float(np.nanmax(values)) if values.size else 1.0
+    for i in range(values.shape[0]):
+        for j in range(values.shape[1]):
+            ax.text(i, j, f"{values[i, j]:.2f}", ha="center", va="center", fontsize=6.5,
+                    color="white" if values[i, j] > limit * 0.62 else "#1c1917")
+    fig.colorbar(image, ax=ax, fraction=0.03, pad=0.02, label="log1p(CP10k)")
+    fig.tight_layout()
+    fig.savefig(path, dpi=140)
+    plt.close(fig)

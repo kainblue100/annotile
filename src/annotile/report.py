@@ -58,6 +58,27 @@ def render(summary: dict) -> str:
     corr_rows = []
     for i, name in enumerate(summary["slice_names"]):
         corr_rows.append([name] + [f"{corr[i][j]:.2f}" for j in range(len(summary["slice_names"]))])
+    composition_headers = ["细胞类型"] + [item["pattern"] for item in summary["patterns"]]
+    composition_rows = []
+    for label in summary["labels"]:
+        fractions = [item["annotation_fraction"].get(label, 0.0) for item in summary["patterns"]]
+        if max(fractions) < 0.02:
+            continue
+        composition_rows.append([label] + [_pct(value) for value in fractions])
+    expression = summary.get("expression") or {}
+    genes = expression.get("genes") or []
+    values = expression.get("values") or {}
+    expression_headers = ["基因"] + [item["pattern"] for item in summary["patterns"]]
+    expression_rows = []
+    for index, gene in enumerate(genes):
+        expression_rows.append(
+            [gene] + [f"{values.get(item['pattern'], [])[index]:.2f}" for item in summary["patterns"]]
+        )
+    top_rows = []
+    for item in summary["patterns"]:
+        picked = (expression.get("top") or {}).get(item["pattern"], [])
+        text = "、".join(f"{row['gene']} {row['value']:.2f}" for row in picked) or "—"
+        top_rows.append([item["pattern"], text])
     overlay_rows = []
     for item in summary["cluster_overlay"]:
         tops = "，".join(
@@ -150,6 +171,16 @@ def render(summary: dict) -> str:
 <img src="figures/fine_correlation.png" alt="细簇平均组成的相关矩阵">
 {_table(["模式", "包含的细簇", "小窗", "细胞", "主要细胞类型"], pattern_rows)}
 <img src="figures/pattern_composition.png" alt="每个模式的细胞类型比例">
+
+<h2><span class="step">每个模式的细胞组成</span></h2>
+<p>下表是该模式里各细胞类型占该模式细胞数的比例。任一模式都不到 2% 的类型没有列出。</p>
+{_table(composition_headers, composition_rows)}
+
+<h2><span class="step">每个模式的基因表达</span></h2>
+<p>表达矩阵参加了聚类：三张切片共有的 {expression.get('shared_genes', method.get('shared_genes', 0))} 个基因先在每个细胞里做成 log1p(CP10k)，再在小窗内平均，取 16 个主成分，和细胞组成、H&amp;E 一起使用。下表是每个模式相对其他模式升高最多的 8 个基因，数值是按细胞数加权的平均 log1p(CP10k)。热图把这些基因在全部模式里的同一套数值放在一起。</p>
+{_table(["模式", "升高的基因和表达值"], top_rows)}
+{_table(expression_headers, expression_rows)}
+<img src="figures/pattern_expression.png" alt="每个模式的基因表达">
 
 <h2><span class="step">每个模式的样子</span></h2>
 <p>版式对应原文图 2。A 的每个点是一个小窗，t-SNE 用的是注释、表达和 H&amp;E 拼在一起的特征，颜色是细簇。B 是这些特征的细簇相关矩阵，只保留下三角。C 的每一格是该模式的一张代表性 H&amp;E 小窗，边框颜色和 B 的模式色一致。</p>
