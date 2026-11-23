@@ -16,6 +16,7 @@ from mathutils import Vector
 
 SCENE_PATH = Path(r"E:\annotile\results\blender_cache\scene.json")
 TREE_PATH = Path(r"E:\annotile\results\trajectory.json")
+LUNG_PATH = Path(r"E:\annotile\results\blender_cache\lungs.glb")
 OUT = Path(r"E:\annotile\results\figures\evolution")
 ZSCALE = 4.0
 SPAN = 40.0
@@ -175,6 +176,49 @@ def transition(source: list[dict], target: list[dict]) -> list[list[dict]]:
     return frames
 
 
+def add_lung(center: Vector, camera) -> None:
+    """BodyParts3D adult lung, placed behind the cells as an anatomical reference."""
+    if not LUNG_PATH.is_file():
+        return
+    before = set(bpy.data.objects)
+    bpy.ops.import_scene.gltf(filepath=str(LUNG_PATH))
+    meshes = [obj for obj in bpy.data.objects if obj not in before and obj.type == "MESH"]
+    if not meshes:
+        return
+    root = bpy.data.objects.new("lung_root", None)
+    bpy.context.collection.objects.link(root)
+    tissue = material("lung", (0.86, 0.58, 0.60), 0.0, 0.55)
+    bsdf = tissue.node_tree.nodes.get("Principled BSDF")
+    if bsdf is not None and "Emission Strength" in bsdf.inputs:
+        bsdf.inputs["Emission Strength"].default_value = 0.18
+        if "Emission Color" in bsdf.inputs:
+            bsdf.inputs["Emission Color"].default_value = (0.95, 0.72, 0.74, 1.0)
+    for obj in meshes:
+        obj.parent = root
+        obj.data.materials.clear()
+        obj.data.materials.append(tissue)
+    bpy.context.view_layer.update()
+    corners = []
+    for obj in meshes:
+        for corner in obj.bound_box:
+            corners.append(obj.matrix_world @ Vector(corner))
+    low = Vector((min(c.x for c in corners), min(c.y for c in corners), min(c.z for c in corners)))
+    high = Vector((max(c.x for c in corners), max(c.y for c in corners), max(c.z for c in corners)))
+    span = high - low
+    size = max(span.x, span.y, span.z)
+    if size <= 0:
+        return
+    root.scale = (280.0 / size, 280.0 / size, 280.0 / size)
+    bpy.context.view_layer.update()
+    corners = []
+    for obj in meshes:
+        for corner in obj.bound_box:
+            corners.append(obj.matrix_world @ Vector(corner))
+    mid = sum(corners, Vector()) / len(corners)
+    away = (center - camera.location).normalized()
+    root.location = root.location + center + away * 95 - mid
+
+
 def build(cells: list[dict], caption: str) -> None:
     clear_scene()
     configure()
@@ -231,6 +275,7 @@ def build(cells: list[dict], caption: str) -> None:
     facing = camera.location - text.location
     text.rotation_euler = facing.to_track_quat("Z", "Y").to_euler()
     text.data.materials.append(material("label", (0.22, 0.08, 0.24), 0.0, 0.0))
+    add_lung(center, camera)
 
 
 def main() -> None:

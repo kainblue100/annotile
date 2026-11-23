@@ -207,8 +207,12 @@ def render(summary: dict) -> str:
 <p>进化图按切片分开画。根是这张切片上分化上皮比例最高的小窗所在的模式。两个模式至少有 3 个相邻小窗才连边，每个模式挂到特征距离更短的上游。节点下的数字是伪时间。红枝通向伪时间最远的模式，视频播的就是这一支。</p>
 <p>5k 上 P7 分出 P1、P6 和 P4，视频是 P7 → P4。这一支 EPCAM 从 2.06 降到 0.89，PECAM1 从 0.70 升到 2.18。P1 再连到只有 1 个小窗的 P3。lc 上没有 P7，根是 P5，分出 P3 和 P1，视频是 P5 → P1。EPCAM 从 1.84 升到 2.96，UBE2C 从 0.16 升到 0.25。P3 是这张片子里细胞最多的模式。luad 上 P7 分出 P1 和 P2，P2 再分出 P6 和 P8，视频是 P7 → P2 → P8。到 P2 时 EPCAM 到 4.32、MKI67 到 0.30；到 P8 时 PECAM1 到 4.03。三张切片各来自一个供体。这是同一张切片里的相似顺序，不是一个病人体内测到的谱系。</p>
 <img src="figures/trajectory.png" alt="三张切片的进化树">
+<p>下面三张把这棵树标在切片上。底图是配准后的 H&amp;E，圆点是 400 µm 小窗，颜色和编号对应 P1 到 P8。白箭头从上游模式的中心指向下游，较粗的是视频里的那一支。Xenium 只覆盖切片的一部分，所以点不会铺满整张 H&amp;E。</p>
+<img src="figures/transition_5k.png" alt="5k 切片上的模式转移">
+<img src="figures/transition_lc.png" alt="lc 切片上的模式转移">
+<img src="figures/transition_luad.png" alt="luad 切片上的模式转移">
 <video src="figures/evolution.mp4" controls playsinline poster="figures/trajectory.png"></video>
-<p>视频按 5k、lc、luad 播放红枝。玻璃盒里的细胞从一块组织的质心变到下一块，颜色和大小跟着细胞类型变。深度放大 4 倍。用的是 EEVEE。这是路径的可视化，细胞没有跨模式追踪。</p>
+<p>视频按 5k、lc、luad 播放红枝。玻璃盒里的细胞从一块组织的质心变到下一块，颜色和大小跟着细胞类型变。深度放大 4 倍。用的是 EEVEE。玻璃盒后面是 BodyParts3D 的成人肺叶模型，来自 Database Center for Life Science，许可是 CC BY-SA 2.1 JP，只作为器官外形。这三张 Xenium 切片来自三个供体，不是同一肺的连续切片，所以没有把它们叠成 <a href="https://kainblue100.github.io/coda-mouse-lung-volume/">小鼠肺体积</a>那种序列重建。细胞没有跨模式追踪。</p>
 <p>同一套 785 个小窗再降到二维。每个点是一个小窗，颜色是模式，大点是该模式全部分窗的中心。灰线和红线是上面的进化树，画到这两个坐标里；红线仍是视频里的那一支。t-SNE 用困惑度 30、PCA 初始化和种子 42。UMAP 用 15 个邻居、min_dist 0.1 和种子 42。线表示切片上相邻，不表示这两个图里的距离。P2 在两张图里都单独成团，P1 和 P3 挨在一起，P4 自成一大团，P6、P7、P8 是小团。</p>
 <img src="figures/pattern_embedding.png" alt="模式在 t-SNE 和 UMAP 中的位置">
 
