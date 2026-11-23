@@ -2,7 +2,7 @@
 
 说明页直接打开：<https://kainblue100.github.io/annotile/>
 
-Annotile 把注释好的空间切片聚成组织模式。每个小窗同时用细胞类型比例、三张切片共有基因的表达，以及配准后的 H&amp;E 颜色和纹理。细胞注释是相对 HIPO 多出来的那一维。每个模式另有一个小块的三维模型：平面位置是 Xenium 质心，细胞半径按类型给定，深度限制在 10 µm 切片内且球体互不穿透，画成膜、细胞质和核。[可旋转的模型](https://kainblue100.github.io/annotile/volume.html)。同一批坐标也用 Blender Cycles 渲染成玻璃盒和细胞近景，盒后是该窗口的 H&E。
+Annotile 把注释好的空间切片聚成组织模式。每个小窗同时用细胞类型比例、三张切片共有基因的表达，以及配准后的 H&amp;E 颜色和纹理。细胞注释是相对 HIPO 多出来的那一维。每个模式另有一个小块的三维模型：平面位置是 Xenium 质心，细胞半径按类型给定，深度限制在 10 µm 切片内且球体互不穿透，画成膜、细胞质和核。[可旋转的模型](https://kainblue100.github.io/annotile/volume.html)。同一批坐标也用 Blender Cycles 渲染成玻璃盒和细胞近景，盒后是该窗口的 H&E。近景每一格是该模式里半径最大的细胞及其最近的两颗邻居，画成半透明的膜、细胞质和核。
 
 Zhang、Liu、Chen 等，Genome Medicine，2025。DOI [10.1186/s13073-025-01526-5](https://doi.org/10.1186/s13073-025-01526-5)。
 
