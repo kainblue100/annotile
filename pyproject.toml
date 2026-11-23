@@ -9,6 +9,11 @@ dependencies = [
   "scikit-learn",
   "matplotlib",
   "scipy",
+  "h5py",
+  "tifffile",
+  "imagecodecs",
+  "pillow",
+  "zarr",
 ]
 
 [project.scripts]

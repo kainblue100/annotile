@@ -148,6 +148,38 @@ def merge_patterns(means: np.ndarray) -> tuple[np.ndarray, int, list[dict]]:
     return best, best_g, records
 
 
+def _scale(block: np.ndarray) -> np.ndarray:
+    center = block.mean(axis=0)
+    spread = block.std(axis=0)
+    spread = np.where(spread < 1e-8, 1.0, spread)
+    return (block - center) / spread
+
+
+def _features(root: Path, window: pd.DataFrame, labels: list[str], window_um: float) -> tuple[np.ndarray, dict]:
+    from annotile.he import he_block
+    from annotile.matrix import expression_block
+
+    blocks = [_scale(window[labels].to_numpy(dtype=np.float64))]
+    note = ["cell-annotation fraction"]
+    details = {"shared_genes": 0, "expression_components": 0, "he": False, "matrix_joins": {}}
+    expr, expr_info = expression_block(root, window, window_um)
+    if expr is not None:
+        blocks.append(_scale(expr))
+        components = int(expr_info.get("expression_components", expr.shape[1]))
+        note.append(f"{components} expression components from {expr_info.get('shared_genes', 0)} shared genes")
+        details["shared_genes"] = int(expr_info.get("shared_genes", 0))
+        details["expression_components"] = components
+        details["matrix_joins"] = {
+            name: item.get("matrix_join") for name, item in expr_info.get("slices", {}).items()
+        }
+    image, _image_info = he_block(root, window, window_um)
+    if image is not None:
+        blocks.append(_scale(image))
+        note.append("H&E mean color, color spread, and texture")
+        details["he"] = True
+    return np.hstack(blocks), {"feature": "; ".join(note), **details}
+
+
 def _corr(means: np.ndarray) -> np.ndarray:
     if len(means) < 2:
         return np.ones((len(means), len(means)))
@@ -173,7 +205,10 @@ def run(root: Path, out: Path, window_um: float = WINDOW_UM, min_cells: int = MI
         part["slice"] = spec.name
         parts.append(part)
     window = pd.concat(parts, ignore_index=True)
-    features = window[labels].to_numpy(dtype=np.float64)
+    features, feature_info = _features(root, window, labels, window_um)
+    np.save(out / "features.npy", features.astype(np.float32))
+    for item in slice_info:
+        item["matrix_join"] = feature_info["matrix_joins"].get(item["name"])
     fine_k, silhouette_rows, fine = choose_k(features)
     window["fine"] = fine
     means = np.vstack([features[fine == i].mean(axis=0) for i in range(fine_k)])
@@ -258,7 +293,10 @@ def run(root: Path, out: Path, window_um: float = WINDOW_UM, min_cells: int = MI
             "silhouette": silhouette_rows,
             "merged_patterns": g_chosen,
             "bic": bic_rows,
-            "feature": "cell-annotation fraction inside each spatial window",
+            "feature": feature_info["feature"],
+            "shared_genes": feature_info["shared_genes"],
+            "expression_components": feature_info["expression_components"],
+            "he": feature_info["he"],
         },
         "labels": labels,
         "slices": slice_info,

@@ -71,6 +71,14 @@ def render(summary: dict) -> str:
             "多数细簇各自留成一个模式。</p>"
         )
     kept = "、".join(summary["labels"])
+    joins = []
+    for item in summary["slices"]:
+        rate = item.get("matrix_join")
+        if rate is not None:
+            joins.append(f"{item['name']} {_pct(rate)}")
+    matrix_line = ""
+    if joins:
+        matrix_line = "<p>表达矩阵和注释细胞编号的匹配率：" + "，".join(joins) + "。</p>"
     portrait_blocks = []
     for item in summary["patterns"]:
         top = "、".join(
@@ -109,9 +117,9 @@ def render(summary: dict) -> str:
 <body>
 <main>
 <h1>Annotile</h1>
-<p>把已经标好细胞类型的空间切片划成小窗，按窗里的细胞类型组成聚类，得到可以在切片之间比较的组织模式。</p>
-<p>输入来自三张公开的人肺 Xenium 切片。细胞类型注释来自 <a href="https://github.com/D10ny3u3/GHIST_input">GHIST_input</a>。细胞坐标来自对应的 10x Genomics <code>cells.csv.gz</code>。形态学流程参照 Zhang、Liu、Chen 等人在 <a href="https://doi.org/10.1186/s13073-025-01526-5">Genome Medicine 2025</a> 上的 HIPO：先得到一批细簇，再用高斯混合按 BIC 把相似细簇合并成模式，最后看每张切片由哪些模式组成。</p>
-<p>HIPO 的细簇特征是 H&amp;E 图块的对比学习向量。这里的切片已经带有细胞注释，所以小窗特征是细胞类型比例。这是比原文多出来的那一维。转录组 Seurat 簇没有放进跨切片的特征里，因为不同实验的簇编号不是同一种细胞状态；它们只在最后用来描述每个模式里混有哪些转录组簇。</p>
+<p>把已经标好细胞类型的空间切片划成小窗，把细胞类型、共有基因表达和配准后的 H&amp;E 外观合在一起聚类，得到可以在切片之间比较的组织模式。</p>
+<p>输入来自三张公开的人肺 Xenium 切片。细胞类型注释来自 <a href="https://github.com/D10ny3u3/GHIST_input">GHIST_input</a>。细胞坐标、H&amp;E 和 <code>cell_feature_matrix.h5</code> 来自对应的 10x Genomics 公开数据。形态学流程参照 Zhang、Liu、Chen 等人在 <a href="https://doi.org/10.1186/s13073-025-01526-5">Genome Medicine 2025</a> 上的 HIPO：先得到一批细簇，再用高斯混合按 BIC 把相似细簇合并成模式，最后看每张切片由哪些模式组成。</p>
+<p>HIPO 的细簇特征是 H&amp;E 图块的对比学习向量。这里的小窗同时使用细胞类型比例、三张切片共有基因的表达主成分，以及配准 H&amp;E 的颜色和纹理。细胞注释是比原文多出来的那一维。转录组 Seurat 簇没有放进跨切片的特征里，因为不同实验的簇编号不是同一种细胞状态；它们只在最后用来描述每个模式里混有哪些转录组簇。</p>
 
 <h2><span class="step">数据</span></h2>
 <ul>{sources}</ul>
@@ -126,7 +134,8 @@ def render(summary: dict) -> str:
 <p>每个细胞按质心落入边长 {method['window_um']:.0f} µm 的方格。少于 {method['min_cells']} 个细胞的方格去掉，相当于原文里丢掉组织太少的图块。三张切片一共 {summary['windows']:,} 个小窗。相邻小窗属于同一模式的比例是 {_pct(summary['neighbor_agreement'])}，用来看这些模式在组织里是成片的还是散点。</p>
 
 <h2><span class="step">3. 小窗特征</span></h2>
-<p>每个小窗的特征是保留细胞类型的比例，加起来等于 1。三张切片使用同一套类型。某张切片没有的类型，比例记为 0。这样后面的模式编号在三张切片上是同一个东西。</p>
+<p>每个小窗先算细胞类型比例。三张切片再对上表达矩阵里共有的 {method.get('shared_genes', 0)} 个基因，取每个细胞的 log1p 标准化表达，在窗内平均后做主成分，这次保留 {method.get('expression_components', 0)} 个成分。H&amp;E 用配准矩阵裁出同一小窗，加入平均颜色、颜色波动和纹理。这三块各自标准化后拼在一起做聚类。</p>
+{matrix_line}
 
 <h2><span class="step">4. 细簇</span></h2>
 <p>对全部小窗做 k-means。k 从 6 试到 20。每次在固定的 4000 个小窗（不足则全部）上计算轮廓系数，只有比当前选择高出 0.01 才换成更大的 k。选中的细簇数是 {method['fine_k']}。</p>
@@ -143,7 +152,7 @@ def render(summary: dict) -> str:
 <img src="figures/pattern_composition.png" alt="每个模式的细胞类型比例">
 
 <h2><span class="step">每个模式的样子</span></h2>
-<p>版式对应原文图 2。A 的每个点是一个小窗，t-SNE 用细胞类型比例，颜色是细簇。B 是细簇平均组成的相关矩阵，只保留下三角，左侧色条是合并后的模式。C 的每一格是该模式里细胞较多的一个代表性小窗，边框颜色和 B 一致；格里的点是细胞，颜色是细胞类型。</p>
+<p>版式对应原文图 2。A 的每个点是一个小窗，t-SNE 用的是注释、表达和 H&amp;E 拼在一起的特征，颜色是细簇。B 是这些特征的细簇相关矩阵，只保留下三角。C 的每一格是该模式的一张代表性 H&amp;E 小窗，边框颜色和 B 的模式色一致。</p>
 <img src="figures/fig2.png" alt="按原文图2排版的细簇、相关矩阵和代表性小窗">
 <img src="figures/fig2c.png" alt="每个模式的代表性小窗">
 

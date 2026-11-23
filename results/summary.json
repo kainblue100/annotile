@@ -3,61 +3,76 @@
     "window_um": 400.0,
     "min_cells": 30,
     "seed": 42,
-    "fine_k": 6,
+    "fine_k": 10,
     "silhouette": [
       {
         "k": 6,
-        "silhouette": 0.4095
+        "silhouette": 0.1983
       },
       {
         "k": 8,
-        "silhouette": 0.3728
+        "silhouette": 0.2195
       },
       {
         "k": 10,
-        "silhouette": 0.3526
+        "silhouette": 0.2382
       },
       {
         "k": 12,
-        "silhouette": 0.3426
+        "silhouette": 0.2446
       },
       {
         "k": 14,
-        "silhouette": 0.335
+        "silhouette": 0.2466
       },
       {
         "k": 16,
-        "silhouette": 0.3512
+        "silhouette": 0.2245
       },
       {
         "k": 18,
-        "silhouette": 0.3209
+        "silhouette": 0.2371
       },
       {
         "k": 20,
-        "silhouette": 0.3362
+        "silhouette": 0.2373
       }
     ],
-    "merged_patterns": 5,
+    "merged_patterns": 8,
     "bic": [
       {
         "g": 2,
-        "bic": 245.86
+        "bic": 1076.06
       },
       {
         "g": 3,
-        "bic": 161.38
+        "bic": 887.57
       },
       {
         "g": 4,
-        "bic": 42.81
+        "bic": 776.87
       },
       {
         "g": 5,
-        "bic": -59.1
+        "bic": 653.81
+      },
+      {
+        "g": 6,
+        "bic": 526.16
+      },
+      {
+        "g": 7,
+        "bic": 371.77
+      },
+      {
+        "g": 8,
+        "bic": 224.8
       }
     ],
-    "feature": "cell-annotation fraction inside each spatial window"
+    "feature": "cell-annotation fraction; 16 expression components from 153 shared genes; H&E mean color, color spread, and texture",
+    "shared_genes": 153,
+    "expression_components": 16,
+    "he": true
   },
   "labels": [
     "AT1",
@@ -94,6 +109,7 @@
         "mph_CXCL9_region": 5140,
         "epi?GRP": 1224
       },
+      "matrix_join": 1.0,
       "windows": 403,
       "cells_in_windows": 253512,
       "cells_outside_windows": 187
@@ -110,6 +126,7 @@
         "low_feat_cell": 7892,
         "fib?": 4667
       },
+      "matrix_join": 1.0,
       "windows": 226,
       "cells_in_windows": 147759,
       "cells_outside_windows": 130
@@ -123,104 +140,139 @@
       "join_rate": 1.0,
       "cells_kept": 161894,
       "dropped": {},
+      "matrix_join": 1.0,
       "windows": 156,
       "cells_in_windows": 161742,
       "cells_outside_windows": 152
     }
   ],
   "windows": 785,
-  "neighbor_agreement": 0.7465,
+  "neighbor_agreement": 0.8359,
   "patterns": [
     {
       "pattern": "P1",
       "fine_clusters": [
-        "F0"
+        "F2",
+        "F7",
+        "F8"
       ],
-      "windows": 222,
-      "cells": 225414,
+      "windows": 227,
+      "cells": 198468,
       "annotation_fraction": {
-        "AT1": 0.0005,
-        "AT2_like": 0.0018,
-        "Tfh_CXCL13_region": 0.0033,
-        "b": 0.0085,
-        "cil": 0.0004,
-        "endo": 0.0375,
-        "endo?": 0.0066,
-        "epi": 0.5505,
-        "epi?": 0.0113,
-        "fib": 0.0919,
-        "fib_SYNPO2": 0.0085,
-        "fib_activated": 0.0199,
-        "lymph_endo": 0.0006,
-        "mast": 0.009,
-        "mph": 0.1044,
-        "nkt": 0.1214,
-        "normal_epi": 0.0001,
-        "plasma": 0.0238
+        "AT1": 0.0019,
+        "AT2_like": 0.0057,
+        "Tfh_CXCL13_region": 0.0017,
+        "b": 0.0547,
+        "cil": 0.0127,
+        "endo": 0.0589,
+        "endo?": 0.0029,
+        "epi": 0.3271,
+        "epi?": 0.0138,
+        "fib": 0.0784,
+        "fib_SYNPO2": 0.0412,
+        "fib_activated": 0.0397,
+        "lymph_endo": 0.0007,
+        "mast": 0.0115,
+        "mph": 0.11,
+        "nkt": 0.1867,
+        "normal_epi": 0.0,
+        "plasma": 0.0524
       },
       "top_annotations": [
-        "epi"
+        "epi",
+        "nkt"
       ]
     },
     {
       "pattern": "P2",
       "fine_clusters": [
-        "F2"
+        "F3"
       ],
-      "windows": 195,
-      "cells": 171726,
+      "windows": 95,
+      "cells": 111092,
       "annotation_fraction": {
-        "AT1": 0.0009,
-        "AT2_like": 0.003,
-        "Tfh_CXCL13_region": 0.0164,
-        "b": 0.0684,
-        "cil": 0.009,
-        "endo": 0.0415,
-        "endo?": 0.033,
-        "epi": 0.1683,
-        "epi?": 0.0689,
-        "fib": 0.0811,
-        "fib_SYNPO2": 0.0187,
-        "fib_activated": 0.0182,
-        "lymph_endo": 0.0054,
-        "mast": 0.0101,
-        "mph": 0.1405,
-        "nkt": 0.224,
-        "normal_epi": 0.0003,
-        "plasma": 0.0924
+        "AT1": 0.0,
+        "AT2_like": 0.0,
+        "Tfh_CXCL13_region": 0.0,
+        "b": 0.009,
+        "cil": 0.0008,
+        "endo": 0.0395,
+        "endo?": 0.0,
+        "epi": 0.5876,
+        "epi?": 0.0,
+        "fib": 0.129,
+        "fib_SYNPO2": 0.0,
+        "fib_activated": 0.0,
+        "lymph_endo": 0.0,
+        "mast": 0.0113,
+        "mph": 0.095,
+        "nkt": 0.1096,
+        "normal_epi": 0.0007,
+        "plasma": 0.0176
       },
       "top_annotations": [
-        "nkt",
         "epi"
       ]
     },
     {
       "pattern": "P3",
       "fine_clusters": [
-        "F1",
-        "F4"
+        "F1"
       ],
-      "windows": 215,
-      "cells": 87147,
+      "windows": 122,
+      "cells": 105605,
       "annotation_fraction": {
-        "AT1": 0.1017,
-        "AT2_like": 0.0826,
+        "AT1": 0.0,
+        "AT2_like": 0.0,
+        "Tfh_CXCL13_region": 0.0304,
+        "b": 0.0359,
+        "cil": 0.0,
+        "endo": 0.0133,
+        "endo?": 0.0621,
+        "epi": 0.2194,
+        "epi?": 0.1065,
+        "fib": 0.0794,
+        "fib_SYNPO2": 0.0,
+        "fib_activated": 0.0,
+        "lymph_endo": 0.0085,
+        "mast": 0.0069,
+        "mph": 0.154,
+        "nkt": 0.1836,
+        "normal_epi": 0.0,
+        "plasma": 0.0999
+      },
+      "top_annotations": [
+        "epi",
+        "nkt",
+        "mph"
+      ]
+    },
+    {
+      "pattern": "P4",
+      "fine_clusters": [
+        "F0"
+      ],
+      "windows": 185,
+      "cells": 80623,
+      "annotation_fraction": {
+        "AT1": 0.1089,
+        "AT2_like": 0.0887,
         "Tfh_CXCL13_region": 0.0,
-        "b": 0.0019,
-        "cil": 0.0032,
-        "endo": 0.3385,
+        "b": 0.002,
+        "cil": 0.0026,
+        "endo": 0.3448,
         "endo?": 0.0,
-        "epi": 0.0119,
+        "epi": 0.0129,
         "epi?": 0.0,
-        "fib": 0.1982,
-        "fib_SYNPO2": 0.0455,
-        "fib_activated": 0.0019,
+        "fib": 0.176,
+        "fib_SYNPO2": 0.0486,
+        "fib_activated": 0.0021,
         "lymph_endo": 0.0,
-        "mast": 0.0163,
-        "mph": 0.0889,
-        "nkt": 0.0968,
-        "normal_epi": 0.003,
-        "plasma": 0.0096
+        "mast": 0.0161,
+        "mph": 0.0886,
+        "nkt": 0.0987,
+        "normal_epi": 0.0,
+        "plasma": 0.0102
       },
       "top_annotations": [
         "endo",
@@ -228,107 +280,179 @@
       ]
     },
     {
-      "pattern": "P4",
+      "pattern": "P5",
       "fine_clusters": [
         "F5"
       ],
-      "windows": 77,
-      "cells": 54156,
-      "annotation_fraction": {
-        "AT1": 0.0049,
-        "AT2_like": 0.0121,
-        "Tfh_CXCL13_region": 0.0,
-        "b": 0.0452,
-        "cil": 0.1666,
-        "endo": 0.0946,
-        "endo?": 0.0,
-        "epi": 0.0468,
-        "epi?": 0.0,
-        "fib": 0.1379,
-        "fib_SYNPO2": 0.2042,
-        "fib_activated": 0.0152,
-        "lymph_endo": 0.0,
-        "mast": 0.0302,
-        "mph": 0.0674,
-        "nkt": 0.1129,
-        "normal_epi": 0.0,
-        "plasma": 0.0618
-      },
-      "top_annotations": [
-        "fib_SYNPO2",
-        "cil"
-      ]
-    },
-    {
-      "pattern": "P5",
-      "fine_clusters": [
-        "F3"
-      ],
-      "windows": 76,
-      "cells": 24570,
+      "windows": 79,
+      "cells": 25777,
       "annotation_fraction": {
         "AT1": 0.0,
         "AT2_like": 0.0,
-        "Tfh_CXCL13_region": 0.0035,
-        "b": 0.0127,
+        "Tfh_CXCL13_region": 0.0037,
+        "b": 0.0125,
         "cil": 0.0,
-        "endo": 0.4197,
-        "endo?": 0.0083,
-        "epi": 0.0009,
-        "epi?": 0.2655,
-        "fib": 0.0036,
+        "endo": 0.4034,
+        "endo?": 0.0092,
+        "epi": 0.0033,
+        "epi?": 0.2679,
+        "fib": 0.0042,
         "fib_SYNPO2": 0.0,
         "fib_activated": 0.0,
-        "lymph_endo": 0.0157,
-        "mast": 0.0187,
-        "mph": 0.1351,
-        "nkt": 0.0869,
+        "lymph_endo": 0.0155,
+        "mast": 0.0185,
+        "mph": 0.144,
+        "nkt": 0.0892,
         "normal_epi": 0.0,
-        "plasma": 0.0295
+        "plasma": 0.0287
       },
       "top_annotations": [
         "endo",
         "epi?"
       ]
+    },
+    {
+      "pattern": "P6",
+      "fine_clusters": [
+        "F4"
+      ],
+      "windows": 47,
+      "cells": 21498,
+      "annotation_fraction": {
+        "AT1": 0.0084,
+        "AT2_like": 0.0166,
+        "Tfh_CXCL13_region": 0.0,
+        "b": 0.0082,
+        "cil": 0.0374,
+        "endo": 0.1263,
+        "endo?": 0.0,
+        "epi": 0.0652,
+        "epi?": 0.0,
+        "fib": 0.2105,
+        "fib_SYNPO2": 0.3001,
+        "fib_activated": 0.0116,
+        "lymph_endo": 0.0,
+        "mast": 0.0306,
+        "mph": 0.0721,
+        "nkt": 0.0732,
+        "normal_epi": 0.0,
+        "plasma": 0.0398
+      },
+      "top_annotations": [
+        "fib_SYNPO2",
+        "fib"
+      ]
+    },
+    {
+      "pattern": "P7",
+      "fine_clusters": [
+        "F6"
+      ],
+      "windows": 19,
+      "cells": 17226,
+      "annotation_fraction": {
+        "AT1": 0.0031,
+        "AT2_like": 0.0084,
+        "Tfh_CXCL13_region": 0.0,
+        "b": 0.0161,
+        "cil": 0.4245,
+        "endo": 0.0586,
+        "endo?": 0.0,
+        "epi": 0.0365,
+        "epi?": 0.0,
+        "fib": 0.0961,
+        "fib_SYNPO2": 0.0935,
+        "fib_activated": 0.0176,
+        "lymph_endo": 0.0,
+        "mast": 0.0317,
+        "mph": 0.0628,
+        "nkt": 0.104,
+        "normal_epi": 0.0001,
+        "plasma": 0.0468
+      },
+      "top_annotations": [
+        "cil"
+      ]
+    },
+    {
+      "pattern": "P8",
+      "fine_clusters": [
+        "F9"
+      ],
+      "windows": 11,
+      "cells": 2724,
+      "annotation_fraction": {
+        "AT1": 0.0,
+        "AT2_like": 0.0,
+        "Tfh_CXCL13_region": 0.0,
+        "b": 0.0007,
+        "cil": 0.0,
+        "endo": 0.4148,
+        "endo?": 0.0,
+        "epi": 0.0231,
+        "epi?": 0.0,
+        "fib": 0.2584,
+        "fib_SYNPO2": 0.0,
+        "fib_activated": 0.0,
+        "lymph_endo": 0.0,
+        "mast": 0.0195,
+        "mph": 0.0932,
+        "nkt": 0.0954,
+        "normal_epi": 0.091,
+        "plasma": 0.0037
+      },
+      "top_annotations": [
+        "endo",
+        "fib"
+      ]
     }
   ],
   "slice_pattern_fraction": {
     "5k": {
-      "P1": 0.2302,
-      "P2": 0.2428,
-      "P3": 0.3198,
-      "P4": 0.2072,
-      "P5": 0.0
+      "P1": 0.5405,
+      "P2": 0.0,
+      "P3": 0.0002,
+      "P4": 0.318,
+      "P5": 0.0,
+      "P6": 0.0797,
+      "P7": 0.0616,
+      "P8": 0.0
     },
     "lc": {
-      "P1": 0.2003,
-      "P2": 0.6334,
-      "P3": 0.0,
+      "P1": 0.1112,
+      "P2": 0.0,
+      "P3": 0.7143,
       "P4": 0.0,
-      "P5": 0.1663
+      "P5": 0.1745,
+      "P6": 0.0,
+      "P7": 0.0,
+      "P8": 0.0
     },
     "luad": {
-      "P1": 0.8499,
-      "P2": 0.1025,
-      "P3": 0.0376,
-      "P4": 0.01,
-      "P5": 0.0
+      "P1": 0.2783,
+      "P2": 0.6868,
+      "P3": 0.0,
+      "P4": 0.0,
+      "P5": 0.0,
+      "P6": 0.008,
+      "P7": 0.01,
+      "P8": 0.0168
     }
   },
   "slice_correlation": [
     [
       1.0,
-      -0.0008,
-      0.1982
+      -0.1876,
+      0.0776
     ],
     [
-      -0.0008,
+      -0.1876,
       1.0,
-      0.0927
+      -0.2206
     ],
     [
-      0.1982,
-      0.0927,
+      0.0776,
+      -0.2206,
       1.0
     ]
   ],
@@ -341,196 +465,215 @@
     {
       "slice": "5k",
       "pattern": "P1",
-      "cells": 58357,
+      "cells": 137030,
       "top_seurat": [
         {
           "cluster": "1",
-          "fraction": 0.3601
-        },
-        {
-          "cluster": "7",
-          "fraction": 0.1277
+          "fraction": 0.2281
         },
         {
           "cluster": "0",
-          "fraction": 0.1242
-        }
-      ]
-    },
-    {
-      "slice": "5k",
-      "pattern": "P2",
-      "cells": 61560,
-      "top_seurat": [
-        {
-          "cluster": "0",
-          "fraction": 0.2451
-        },
-        {
-          "cluster": "1",
-          "fraction": 0.1615
+          "fraction": 0.1834
         },
         {
           "cluster": "4",
-          "fraction": 0.1159
+          "fraction": 0.11
         }
       ]
     },
     {
       "slice": "5k",
       "pattern": "P3",
-      "cells": 81061,
+      "cells": 54,
       "top_seurat": [
         {
-          "cluster": "2",
-          "fraction": 0.3403
+          "cluster": "4",
+          "fraction": 0.5741
         },
         {
-          "cluster": "3",
-          "fraction": 0.1776
+          "cluster": "1",
+          "fraction": 0.2037
         },
         {
-          "cluster": "9",
-          "fraction": 0.1093
+          "cluster": "6",
+          "fraction": 0.0926
         }
       ]
     },
     {
       "slice": "5k",
       "pattern": "P4",
-      "cells": 52534,
+      "cells": 80623,
       "top_seurat": [
         {
-          "cluster": "5",
-          "fraction": 0.2105
-        },
-        {
-          "cluster": "8",
-          "fraction": 0.1605
+          "cluster": "2",
+          "fraction": 0.339
         },
         {
           "cluster": "3",
-          "fraction": 0.1376
+          "fraction": 0.176
+        },
+        {
+          "cluster": "9",
+          "fraction": 0.1089
+        }
+      ]
+    },
+    {
+      "slice": "5k",
+      "pattern": "P6",
+      "cells": 20201,
+      "top_seurat": [
+        {
+          "cluster": "5",
+          "fraction": 0.3193
+        },
+        {
+          "cluster": "3",
+          "fraction": 0.1727
+        },
+        {
+          "cluster": "0",
+          "fraction": 0.0765
+        }
+      ]
+    },
+    {
+      "slice": "5k",
+      "pattern": "P7",
+      "cells": 15604,
+      "top_seurat": [
+        {
+          "cluster": "8",
+          "fraction": 0.4309
+        },
+        {
+          "cluster": "5",
+          "fraction": 0.1032
+        },
+        {
+          "cluster": "0",
+          "fraction": 0.1007
         }
       ]
     },
     {
       "slice": "lc",
       "pattern": "P1",
-      "cells": 29600,
+      "cells": 16431,
       "top_seurat": [
         {
           "cluster": "0",
-          "fraction": 0.4736
+          "fraction": 0.3095
         },
         {
           "cluster": "1",
-          "fraction": 0.1334
+          "fraction": 0.1784
         },
         {
           "cluster": "2",
-          "fraction": 0.1168
+          "fraction": 0.1397
         }
       ]
     },
     {
       "slice": "lc",
-      "pattern": "P2",
-      "cells": 93589,
+      "pattern": "P3",
+      "cells": 105551,
       "top_seurat": [
         {
+          "cluster": "0",
+          "fraction": 0.2194
+        },
+        {
           "cluster": "1",
-          "fraction": 0.1981
+          "fraction": 0.1837
         },
         {
           "cluster": "2",
-          "fraction": 0.1652
-        },
-        {
-          "cluster": "0",
-          "fraction": 0.1527
+          "fraction": 0.1538
         }
       ]
     },
     {
       "slice": "lc",
       "pattern": "P5",
-      "cells": 24570,
+      "cells": 25777,
       "top_seurat": [
         {
           "cluster": "3",
-          "fraction": 0.4197
+          "fraction": 0.4034
         },
         {
           "cluster": "5",
-          "fraction": 0.2372
+          "fraction": 0.2368
         },
         {
           "cluster": "2",
-          "fraction": 0.1351
+          "fraction": 0.144
         }
       ]
     },
     {
       "slice": "luad",
       "pattern": "P1",
-      "cells": 137457,
+      "cells": 45007,
       "top_seurat": [
         {
           "cluster": "0",
-          "fraction": 0.2358
+          "fraction": 0.2043
+        },
+        {
+          "cluster": "2",
+          "fraction": 0.1997
         },
         {
           "cluster": "1",
-          "fraction": 0.2218
-        },
-        {
-          "cluster": "4",
-          "fraction": 0.1271
+          "fraction": 0.1196
         }
       ]
     },
     {
       "slice": "luad",
       "pattern": "P2",
-      "cells": 16577,
+      "cells": 111092,
       "top_seurat": [
         {
-          "cluster": "2",
-          "fraction": 0.2917
+          "cluster": "1",
+          "fraction": 0.2307
         },
         {
-          "cluster": "3",
-          "fraction": 0.1311
+          "cluster": "0",
+          "fraction": 0.2214
         },
         {
-          "cluster": "8",
-          "fraction": 0.1108
+          "cluster": "4",
+          "fraction": 0.1266
         }
       ]
     },
     {
       "slice": "luad",
-      "pattern": "P3",
-      "cells": 6086,
+      "pattern": "P6",
+      "cells": 1297,
       "top_seurat": [
         {
+          "cluster": "9",
+          "fraction": 0.5659
+        },
+        {
           "cluster": "3",
-          "fraction": 0.3005
+          "fraction": 0.2328
         },
         {
           "cluster": "6",
-          "fraction": 0.2356
-        },
-        {
-          "cluster": "9",
-          "fraction": 0.1722
+          "fraction": 0.0902
         }
       ]
     },
     {
       "slice": "luad",
-      "pattern": "P4",
+      "pattern": "P7",
       "cells": 1622,
       "top_seurat": [
         {
@@ -544,6 +687,25 @@
         {
           "cluster": "3",
           "fraction": 0.1159
+        }
+      ]
+    },
+    {
+      "slice": "luad",
+      "pattern": "P8",
+      "cells": 2724,
+      "top_seurat": [
+        {
+          "cluster": "6",
+          "fraction": 0.4148
+        },
+        {
+          "cluster": "3",
+          "fraction": 0.2283
+        },
+        {
+          "cluster": "2",
+          "fraction": 0.0954
         }
       ]
     }

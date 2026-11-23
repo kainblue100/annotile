@@ -14,6 +14,9 @@ class SliceSpec:
     centroids: str
     source: str
     centroid_url: str
+    matrix: str
+    he_image: str
+    he_alignment: str
 
 
 SLICES: tuple[SliceSpec, ...] = (
@@ -29,6 +32,9 @@ SLICES: tuple[SliceSpec, ...] = (
             "Xenium_Prime_Human_Lung_Cancer_FFPE/"
             "Xenium_Prime_Human_Lung_Cancer_FFPE_cells.csv.gz"
         ),
+        matrix="data/matrices/5k_cell_feature_matrix.h5",
+        he_image="data/he/5k_he_image.ome.tif",
+        he_alignment="data/he/5k_he_imagealignment.csv",
     ),
     SliceSpec(
         name="lc",
@@ -45,6 +51,9 @@ SLICES: tuple[SliceSpec, ...] = (
             "Xenium_V1_Human_Lung_Cancer_Addon_FFPE/"
             "Xenium_V1_Human_Lung_Cancer_Addon_FFPE_cells.csv.gz"
         ),
+        matrix="data/matrices/lc_cell_feature_matrix.h5",
+        he_image="data/he/lc_he_image.ome.tif",
+        he_alignment="data/he/lc_he_imagealignment.csv",
     ),
     SliceSpec(
         name="luad",
@@ -61,6 +70,9 @@ SLICES: tuple[SliceSpec, ...] = (
             "Xenium_V1_humanLung_Cancer_FFPE/"
             "Xenium_V1_humanLung_Cancer_FFPE_cells.csv.gz"
         ),
+        matrix="data/matrices/luad_cell_feature_matrix.h5",
+        he_image="data/he/luad_he_image.ome.tif",
+        he_alignment="data/he/luad_he_imagealignment.csv",
     ),
 )
 

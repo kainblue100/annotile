@@ -2,7 +2,7 @@
 
 说明页直接打开：<https://kainblue100.github.io/annotile/>
 
-Annotile 把注释好的空间切片聚成组织模式。小窗的特征是细胞类型比例，对应 HIPO 流程里的图块特征，并多出细胞注释这一维。
+Annotile 把注释好的空间切片聚成组织模式。每个小窗同时用细胞类型比例、三张切片共有基因的表达，以及配准后的 H&amp;E 颜色和纹理。细胞注释是相对 HIPO 多出来的那一维。
 
 Zhang、Liu、Chen 等，Genome Medicine，2025。DOI [10.1186/s13073-025-01526-5](https://doi.org/10.1186/s13073-025-01526-5)。
 
@@ -10,9 +10,9 @@ Zhang、Liu、Chen 等，Genome Medicine，2025。DOI [10.1186/s13073-025-01526-
 
 细胞注释来自 [D10ny3u3/GHIST_input](https://github.com/D10ny3u3/GHIST_input) 的 `data_input`。细胞坐标是这三份公开的 10x `cells.csv.gz`：
 
-- Prime 5K：`Xenium_Prime_Human_Lung_Cancer_FFPE_cells.csv.gz`
-- 免疫组库面板：`Xenium_V1_Human_Lung_Cancer_Addon_FFPE_cells.csv.gz`
-- 多模态分割：`Xenium_V1_humanLung_Cancer_FFPE_cells.csv.gz`
+- Prime 5K：`Xenium_Prime_Human_Lung_Cancer_FFPE` 的 `cells.csv.gz`、`cell_feature_matrix.h5`、`he_image.ome.tif`
+- 免疫组库面板：`Xenium_V1_Human_Lung_Cancer_Addon_FFPE` 的同样三个文件
+- 多模态分割：`Xenium_V1_humanLung_Cancer_FFPE` 的同样三个文件
 
 目录：
 
