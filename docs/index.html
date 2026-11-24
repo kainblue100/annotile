@@ -23,37 +23,37 @@
 <body>
 <main>
 <h1>17 张 Takano 切片，和原来 3 张片子</h1>
-<p>17 张是单独跑的一轮，没有把 CosMx 和另外三张公开 Xenium 混进去。原来 3 张的完整页面还在。两轮的数字都来自种子 42。</p>
+<p>17 张是单独跑的一轮，小窗边长 800 微米，没有把 CosMx 和另外三张公开 Xenium 混进去。原来 3 张的完整页面还在，边长仍是 400 微米。数字都来自种子 42。</p>
 <p><a href="takano/index.html">17 张的完整结果</a> · <a href="three/index.html">原来 3 张的完整结果</a> · <a href="windows/index.html">四种小窗边长</a></p>
 
 <h2>放在一起看</h2>
 <table>
-<thead><tr><th></th><th>原来 3 张，已发布的那一轮</th><th>原来 3 张，用现在这套代码重跑</th><th>17 张 Takano，这一轮</th></tr></thead>
+<thead><tr><th></th><th>原来 3 张，已发布的那一轮</th><th>原来 3 张，用现在这套代码重跑</th><th>17 张 Takano，800 µm</th></tr></thead>
 <tbody>
 <tr><td>切片</td><td>5k、lc、luad，三套不同面板</td><td>同样这三张</td><td>Takano 的 17 张肺腺癌，同一套面板，每张一位病人</td></tr>
 <tr><td>留下的细胞</td><td class="num">563,482</td><td class="num">563,013</td><td class="num">2,382,221</td></tr>
-<tr><td>小窗</td><td class="num">785</td><td class="num">785</td><td class="num">2,872</td></tr>
+<tr><td>小窗</td><td class="num">785</td><td class="num">785</td><td class="num">879</td></tr>
 <tr><td>共有基因</td><td class="num">153，含配准 H&amp;E</td><td class="num">133 个基因表达，含配准 H&amp;E，按切片减去均值</td><td class="num">302 个基因表达，没有配准 H&amp;E，按切片减去均值</td></tr>
 <tr><td>第二步</td><td>全体小窗一次 k-means，再按 BIC 做高斯混合</td><td>每张切片内部 k-means，再对簇均值做第二次 k-means</td><td>与中间这一列相同</td></tr>
 <tr><td>模式数</td><td class="num">8</td><td class="num">4</td><td class="num">4</td></tr>
-<tr><td>相邻小窗同一模式</td><td class="num">83.6%</td><td class="num">83.0%</td><td class="num">92.3%</td></tr>
-<tr><td>跨切片重复</td><td>8 个模式里只有 P1 在三张上都达到 5% 细胞</td><td>4 个模式里有 2 个出现在至少两张切片，平均 1.75 张达到 5%</td><td>4 个模式都出现在至少两位病人，平均 7.5 位达到 5%</td></tr>
-<tr><td>一张切片内部</td><td>每张都有 2 个以上模式</td><td>每张都有 2 或 3 个模式</td><td>6 张整张都是 P1</td></tr>
+<tr><td>相邻小窗同一模式</td><td class="num">83.6%</td><td class="num">83.0%</td><td class="num">78.0%</td></tr>
+<tr><td>跨切片重复</td><td>8 个模式里只有 P1 在三张上都达到 5% 细胞</td><td>4 个模式里有 2 个出现在至少两张切片，平均 1.75 张达到 5%</td><td>4 个模式里有 3 个出现在至少两位病人，平均 9.5 位达到 5%</td></tr>
+<tr><td>一张切片内部</td><td>每张都有 2 个以上模式</td><td>每张都有 2 或 3 个模式</td><td>16 张至少有两个模式，TSU-20 整张是 P3</td></tr>
 </tbody>
 </table>
 
 <h2>17 张强在哪里</h2>
-<p>面板是同一套，共有基因是 302 个，比三张片子交集里的 133 或 153 个多。病人从 3 张公开切片变成 17 位。4 个模式都能在多位病人里看到，原来那一轮只有 1 个模式在三张上都站得住。细胞数大约是原来的 4 倍。</p>
-<p>这一轮的 4 个模式：P1 有 2,070,795 个细胞，肿瘤 28.5%、成纤维 16.3%、髓系 12.7%。P2 有 164,474 个细胞，肺泡 24.9%、成纤维 22.5%、内皮 22.0%。P3 有 121,406 个细胞，T/NK 22.6%、B 细胞 21.6%。P4 有 23,394 个细胞，气道 55.0%。club_1_like 和 club_2_like 记在气道里。</p>
+<p>面板是同一套，共有基因是 302 个，比三张片子交集里的 133 或 153 个多。病人从 3 张公开切片变成 17 位。3 个模式能在多位病人里看到，平均 9.5 位达到 5%。细胞数大约是原来的 4 倍。最大模式占进入小窗细胞的 52.4%。</p>
+<p>这一轮的 4 个模式：P1 有 1,247,007 个细胞，肿瘤 39.8%、成纤维 17.4%、髓系 12.7%。P2 有 880,961 个细胞，气道 23.5%、T/NK 15.3%、成纤维 13.2%，肿瘤 11.2%。P3 有 248,592 个细胞，成纤维 22.2%、内皮 19.2%、肺泡 19.0%。P4 有 5,105 个细胞、5 个小窗，肿瘤 57.5%，出现在 LUAD_No17。</p>
 
 <h2>17 张弱在哪里</h2>
-<p>P1 占了留下细胞的 87%，组成是肿瘤、成纤维和髓系混在一起，不像原来 P2 的上皮 59%、P4 的内皮 34%、P7 的纤毛 42% 那样收成一种细胞。LUAD_No2、No14、No17、TSU-23、TSU-27、TSU-41 这 6 张在 5% 以上只有 P1，切片内部没有第二种模式。相邻一致率 92.3% 高于原来的 83.6%，主要是因为大片小窗被收进同一个 P1，不是边界更清楚。</p>
+<p>P1 的肿瘤细胞占 39.8%，成纤维和髓系仍在同一模式里。P2 的气道占 23.5%。P4 只有 5 个小窗。TSU-20 整张是 P3。相邻小窗属于同一模式的比例是 78.0%。</p>
 <p>17 张没有配准后的 H&amp;E，特征里只有细胞组成和表达。原来 3 张有颜色和纹理。注释是每张切片单独聚类后人工命名的，名字先收成粗类再放在一起。</p>
-<p>用现在这套代码把原来 3 张重跑，也会从 8 个模式收到 4 个，P1 占留下细胞的 58%，轮廓系数在 k=4 时是 0.143。所以模式变少有一部分来自第二次 k-means 选了最小的 k。即便如此，重跑后的三张每张仍有 2 或 3 个模式。6 张塌成单一模式，是 17 张这一轮自己的结果。</p>
-<p>第二次聚类的轮廓系数：17 张上 k=4 为 0.141，k=6 为 0.110，k=8 为 0.126，按高出 0.01 才换更大 k 的规则留下 4。这个系数低，4 个模式不是分得很开。</p>
+<p>用现在这套代码把原来 3 张重跑，会从 8 个模式收到 4 个，P1 占留下细胞的 58%，轮廓系数在 k=4 时是 0.143。那三张的边长仍是 400 微米。</p>
+<p>800 微米这一轮的第二次聚类轮廓系数：k=4 为 0.096，k=6 为 0.083，k=8 为 0.096。k=4 和 k=8 相同，按高出 0.01 才换更大 k 的规则留下 4。</p>
 
 <h2>小窗边长</h2>
-<p>同一批 17 张、同一套特征、种子 42，把方格边长改成 200、800 和 1600 微米再各跑一轮。每个小窗仍至少 30 个细胞。400 微米是上面这一列。下图每一段是该边长内部按细胞数编号的模式，P1 最大。编号只在同一条里可比。</p>
+<p>同一批 17 张、同一套特征、种子 42，比过 200、400、800 和 1600 微米。每个小窗至少 30 个细胞。上面这一列和<a href="takano/index.html">完整结果</a>用的是 800 微米。下图每一段是该边长内部按细胞数编号的模式，P1 最大。编号只在同一条里可比。</p>
 <svg class="bars" viewBox="0 0 760 228" role="img" aria-label="200、400、800、1600 微米下各模式占进入小窗细胞的比例。800 微米的最大段是 52%。">
   <title>四种边长的细胞占比</title>
   <rect x="0" y="96" width="760" height="44" fill="#fff7ed"/>
@@ -103,8 +103,8 @@
 <thead><tr><th>边长</th><th>小窗</th><th>进入小窗的细胞</th><th>模式</th><th>最大模式</th><th>单一模式切片</th><th>至少两位病人</th><th>平均病人数</th><th>轮廓系数</th><th>邻窗一致</th></tr></thead>
 <tbody>
 <tr><td class="num">200 µm</td><td class="num">10,091</td><td class="num">2,372,112</td><td class="num">6</td><td class="num">86.0%</td><td class="num">2/17</td><td class="num">6/6</td><td class="num">6.2</td><td class="num">0.168</td><td class="num">91.9%</td></tr>
-<tr><td class="num">400 µm，已发布</td><td class="num">2,872</td><td class="num">2,380,069</td><td class="num">4</td><td class="num">87.0%</td><td class="num">6/17</td><td class="num">4/4</td><td class="num">7.5</td><td class="num">0.141</td><td class="num">92.3%</td></tr>
-<tr class="pick"><td class="num">800 µm</td><td class="num">879</td><td class="num">2,381,665</td><td class="num">4</td><td class="num">52.4%</td><td class="num">1/17</td><td class="num">3/4</td><td class="num">9.5</td><td class="num">0.096</td><td class="num">78.0%</td></tr>
+<tr><td class="num">400 µm，上一轮</td><td class="num">2,872</td><td class="num">2,380,069</td><td class="num">4</td><td class="num">87.0%</td><td class="num">6/17</td><td class="num">4/4</td><td class="num">7.5</td><td class="num">0.141</td><td class="num">92.3%</td></tr>
+<tr class="pick"><td class="num">800 µm，完整结果</td><td class="num">879</td><td class="num">2,381,665</td><td class="num">4</td><td class="num">52.4%</td><td class="num">1/17</td><td class="num">3/4</td><td class="num">9.5</td><td class="num">0.096</td><td class="num">78.0%</td></tr>
 <tr><td class="num">1600 µm</td><td class="num">291</td><td class="num">2,382,015</td><td class="num">6</td><td class="num">39.3%</td><td class="num">3/17</td><td class="num">4/6</td><td class="num">5.8</td><td class="num">0.081</td><td class="num">78.5%</td></tr>
 </tbody>
 </table>
