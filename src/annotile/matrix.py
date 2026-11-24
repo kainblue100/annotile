@@ -10,7 +10,7 @@ import pandas as pd
 from scipy import sparse
 from sklearn.decomposition import PCA
 
-from annotile.data import SLICES, SliceSpec
+from annotile.data import SliceSpec, load_cohort
 from annotile.pipeline import WINDOW_UM, load_slice
 
 
@@ -56,7 +56,7 @@ def window_gene_means(root: Path, windows: pd.DataFrame, window_um: float = WIND
     """Per-window mean of log1p(CP10k) on genes shared by every slice."""
     loaded = []
     info = {"shared_genes": 0, "slices": {}}
-    for spec in SLICES:
+    for spec in load_cohort(root):
         path = root / spec.matrix
         if not path.is_file():
             return None, [], info
@@ -99,10 +99,26 @@ def window_gene_means(root: Path, windows: pd.DataFrame, window_um: float = WIND
     return means, shared_names, info
 
 
+def _center_by_slice(means: np.ndarray, windows: pd.DataFrame) -> np.ndarray:
+    """Remove each section's own mean so a platform-wide offset is not a pattern."""
+    centered = np.array(means, copy=True)
+    if "slice" not in windows.columns:
+        return centered
+    labels = windows["slice"].to_numpy()
+    for label in pd.unique(labels):
+        mask = labels == label
+        if int(mask.sum()) < 2:
+            continue
+        centered[mask] -= centered[mask].mean(axis=0)
+    return centered
+
+
 def expression_block(root: Path, windows: pd.DataFrame, window_um: float = WINDOW_UM) -> tuple[np.ndarray | None, dict]:
     means, _names, info = window_gene_means(root, windows, window_um)
     if means is None:
         return None, info
+    means = _center_by_slice(means, windows)
+    info["expression_centering"] = "per-section"
     components = min(16, means.shape[0] - 1, means.shape[1])
     if components < 2:
         return means, info

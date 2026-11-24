@@ -16,7 +16,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import StandardScaler
 
-from annotile.data import SLICES, SliceSpec, keep_label
+from annotile.data import SliceSpec, keep_label, load_cohort, to_coarse
 
 SEED = 42
 WINDOW_UM = 400.0
@@ -36,16 +36,22 @@ def _xy(columns: list[str]) -> tuple[str, str]:
 
 def load_slice(root: Path, spec: SliceSpec) -> tuple[pd.DataFrame, dict]:
     ann = pd.read_csv(root / spec.annotation, dtype=str)
-    clu = pd.read_csv(root / spec.clusters, dtype=str)
     cen = pd.read_csv(root / spec.centroids)
     xcol, ycol = _xy(list(cen.columns))
     cen = cen.rename(columns={xcol: "x", ycol: "y"})
     cen["cell_id"] = cen["cell_id"].astype(str)
     ann = ann.rename(columns={"group": "annotation"})
-    clu = clu.rename(columns={"group": "seurat"})
-    merged = ann[["cell_id", "annotation"]].merge(
-        clu[["cell_id", "seurat"]], on="cell_id", how="left"
-    )
+    ann["cell_id"] = ann["cell_id"].astype(str)
+    if spec.clusters and (root / spec.clusters).is_file():
+        clu = pd.read_csv(root / spec.clusters, dtype=str)
+        clu = clu.rename(columns={"group": "seurat"})
+        clu["cell_id"] = clu["cell_id"].astype(str)
+        merged = ann[["cell_id", "annotation"]].merge(
+            clu[["cell_id", "seurat"]], on="cell_id", how="left"
+        )
+    else:
+        merged = ann[["cell_id", "annotation"]].copy()
+        merged["seurat"] = "NA"
     n_table = int(len(merged))
     merged = merged.merge(cen[["cell_id", "x", "y"]], on="cell_id", how="inner")
     n_xy = int(len(merged))
@@ -58,6 +64,11 @@ def load_slice(root: Path, spec: SliceSpec) -> tuple[pd.DataFrame, dict]:
         merged.loc[~merged["keep"], "annotation"].value_counts().astype(int).to_dict()
     )
     kept = merged.loc[merged["keep"]].copy()
+    kept["annotation"] = kept["annotation"].map(to_coarse)
+    unmapped = kept["annotation"].eq("")
+    if unmapped.any():
+        dropped["unmapped"] = int(unmapped.sum())
+        kept = kept.loc[~unmapped].copy()
     kept["x"] = pd.to_numeric(kept["x"], errors="coerce")
     kept["y"] = pd.to_numeric(kept["y"], errors="coerce")
     kept = kept.dropna(subset=["x", "y"])
@@ -70,6 +81,7 @@ def load_slice(root: Path, spec: SliceSpec) -> tuple[pd.DataFrame, dict]:
         "join_rate": round(n_xy / n_table, 4),
         "cells_kept": int(len(kept)),
         "dropped": dropped,
+        "patient": spec.patient or spec.name,
     }
     return kept, info
 
@@ -93,32 +105,107 @@ def windows_for(cells: pd.DataFrame, labels: list[str], window_um: float, min_ce
     return fractions.reset_index()
 
 
-def choose_k(features: np.ndarray) -> tuple[int, list[dict], np.ndarray]:
+def choose_k(
+    features: np.ndarray,
+    candidates: tuple[int, ...] = K_CANDIDATES,
+    sample_weight: np.ndarray | None = None,
+) -> tuple[int, list[dict], np.ndarray]:
     rng = np.random.default_rng(SEED)
     sample_n = min(4000, len(features))
     sample = features[rng.choice(len(features), sample_n, replace=False)]
     rows = []
-    best_k = K_CANDIDATES[0]
+    best_k = None
     best_score = -1.0
     labels = None
-    for k in K_CANDIDATES:
+    for k in candidates:
         if k >= len(features):
             continue
         model = KMeans(n_clusters=k, n_init=10, random_state=SEED)
-        full = model.fit_predict(features)
+        if sample_weight is None:
+            model.fit(features)
+        else:
+            model.fit(features, sample_weight=sample_weight)
+        full = np.array(model.labels_, copy=True)
         score = float(silhouette_score(sample, model.predict(sample), metric="euclidean"))
         rows.append({"k": k, "silhouette": round(score, 4)})
-        if score > best_score + 0.01:
+        if labels is None or score > best_score + 0.01:
             best_score = score
             best_k = k
             labels = full
-        elif labels is None:
-            labels = full
-            best_k = k
-            best_score = score
-    if labels is None:
+    if labels is None or best_k is None:
         raise RuntimeError("no fine clustering candidate could be fit")
     return best_k, rows, labels
+
+
+def _absorb_small(block: np.ndarray, labels: np.ndarray, weights: np.ndarray, min_frac: float = 0.05) -> np.ndarray:
+    """Fold a within-slice cluster that covers under 5% of the section into its nearest neighbor."""
+    labels = np.array(labels, copy=True)
+    total = float(weights.sum())
+    if total <= 0:
+        return labels
+    large: dict[int, np.ndarray] = {}
+    small = []
+    for cluster in sorted(set(int(v) for v in labels)):
+        mask = labels == cluster
+        if float(weights[mask].sum()) / total < min_frac:
+            small.append(cluster)
+        else:
+            large[cluster] = block[mask].mean(axis=0)
+    if not large:
+        return labels
+    for cluster in small:
+        mask = labels == cluster
+        center = block[mask].mean(axis=0)
+        dest = min(large, key=lambda name: float(np.linalg.norm(large[name] - center)))
+        labels[mask] = dest
+    return labels
+
+
+def assign_shared(features: np.ndarray, window: pd.DataFrame) -> tuple[np.ndarray, dict]:
+    """Within-slice k-means, then one k-means on the cluster means.
+
+    Local clusters stay inside one section. Sections only meet in the second
+    k-means, which is the megacluster step of Wang, Venet and Sotiriou,
+    Nat Commun 2024. A patient with three serial sections has the same total
+    weight as a patient with one section.
+    """
+    slices = window["slice"].to_numpy()
+    patients = window["patient"].to_numpy()
+    weights = window["n_cells"].to_numpy(dtype=np.float64)
+    sections_of: dict[str, set[str]] = {}
+    for sl, patient in zip(slices.tolist(), patients.tolist()):
+        sections_of.setdefault(str(patient), set()).add(str(sl))
+    local = np.full(len(window), -1, dtype=np.int32)
+    centroids = []
+    votes = []
+    per_slice = []
+    offset = 0
+    for sl in list(dict.fromkeys(slices.tolist())):
+        idx = np.flatnonzero(slices == sl)
+        _k, rows, lab = choose_k(features[idx], (4, 6, 8, 10, 12))
+        lab = _absorb_small(features[idx], lab, weights[idx])
+        remap = {old: new for new, old in enumerate(sorted(set(int(v) for v in lab)))}
+        lab = np.array([remap[int(v)] for v in lab], dtype=np.int32)
+        k = len(remap)
+        local[idx] = lab + offset
+        patient = str(patients[idx[0]])
+        share = 1.0 / (len(sections_of[patient]) * k)
+        for cluster in range(k):
+            members = idx[lab == cluster]
+            centroids.append(features[members].mean(axis=0))
+            votes.append(share)
+        per_slice.append({"slice": sl, "k": k, "silhouette": rows})
+        offset += k
+    centroids = np.vstack(centroids)
+    shared_k, shared_rows, mega = choose_k(
+        centroids, (4, 6, 8), sample_weight=np.array(votes, dtype=np.float64)
+    )
+    return mega[local], local, {
+        "per_slice": per_slice,
+        "local_clusters": int(offset),
+        "shared_k": int(shared_k),
+        "shared_silhouette": shared_rows,
+    }
 
 
 def merge_patterns(means: np.ndarray) -> tuple[np.ndarray, int, list[dict]]:
@@ -169,6 +256,7 @@ def _features(root: Path, window: pd.DataFrame, labels: list[str], window_um: fl
         note.append(f"{components} expression components from {expr_info.get('shared_genes', 0)} shared genes")
         details["shared_genes"] = int(expr_info.get("shared_genes", 0))
         details["expression_components"] = components
+        details["expression_centering"] = expr_info.get("expression_centering", "")
         details["matrix_joins"] = {
             name: item.get("matrix_join") for name, item in expr_info.get("slices", {}).items()
         }
@@ -190,30 +278,35 @@ def run(root: Path, out: Path, window_um: float = WINDOW_UM, min_cells: int = MI
     out.mkdir(parents=True, exist_ok=True)
     fig_dir = out / "figures"
     fig_dir.mkdir(exist_ok=True)
+    specs = load_cohort(root)
     slice_info = []
     frames = []
-    for spec in SLICES:
+    for spec in specs:
         cells, info = load_slice(root, spec)
         cells["slice"] = spec.name
+        cells["patient"] = spec.patient or spec.name
         frames.append(cells)
         slice_info.append(info)
     all_cells = pd.concat(frames, ignore_index=True)
     labels = sorted(all_cells["annotation"].unique())
     parts = []
-    for spec in SLICES:
+    for spec in specs:
         part = windows_for(all_cells[all_cells["slice"] == spec.name], labels, window_um, min_cells)
         part["slice"] = spec.name
+        part["patient"] = spec.patient or spec.name
         parts.append(part)
     window = pd.concat(parts, ignore_index=True)
     features, feature_info = _features(root, window, labels, window_um)
     np.save(out / "features.npy", features.astype(np.float32))
     for item in slice_info:
         item["matrix_join"] = feature_info["matrix_joins"].get(item["name"])
-    fine_k, silhouette_rows, fine = choose_k(features)
+    raw_pattern_windows, fine, shared_info = assign_shared(features, window)
     window["fine"] = fine
-    means = np.vstack([features[fine == i].mean(axis=0) for i in range(fine_k)])
+    window["raw"] = raw_pattern_windows
+    n_fine = int(fine.max()) + 1
+    means = np.vstack([features[fine == i].mean(axis=0) for i in range(n_fine)])
     correlation = _corr(means)
-    raw_pattern, g_chosen, bic_rows = merge_patterns(means)
+    raw_pattern = np.array([int(raw_pattern_windows[fine == i][0]) for i in range(n_fine)])
     # Name patterns by how many cells they cover, largest first.
     cell_weight = window.groupby("fine")["n_cells"].sum()
     totals = {}
@@ -245,7 +338,7 @@ def run(root: Path, out: Path, window_um: float = WINDOW_UM, min_cells: int = MI
 
     slice_fraction = {}
     cluster_overlay = []
-    for spec in SLICES:
+    for spec in specs:
         block = window[window["slice"] == spec.name]
         covered = int(block["n_cells"].sum())
         fractions = {}
@@ -277,35 +370,75 @@ def run(root: Path, out: Path, window_um: float = WINDOW_UM, min_cells: int = MI
         info["cells_outside_windows"] = int(info["cells_kept"] - covered)
 
     names = [row["pattern"] for row in pattern_rows]
-    matrix = np.array([[slice_fraction[spec.name][p] for p in names] for spec in SLICES])
-    if len(SLICES) > 1:
-        slice_corr = np.corrcoef(matrix).round(4).tolist()
+    matrix = np.array([[slice_fraction[spec.name][p] for p in names] for spec in specs])
+    if len(specs) > 1 and matrix.shape[0] > 1:
+        slice_corr = np.corrcoef(matrix)
+        slice_corr = np.nan_to_num(slice_corr, nan=0.0).round(4).tolist()
     else:
         slice_corr = [[1.0]]
 
     agreement = _neighbor_agreement(window)
+    patients = []
+    for spec in specs:
+        patient = spec.patient or spec.name
+        if patient not in patients:
+            patients.append(patient)
+    present = []
+    for row in pattern_rows:
+        n_patients = 0
+        for patient in patients:
+            owned = [spec.name for spec in specs if (spec.patient or spec.name) == patient]
+            cells = 0
+            covered = 0
+            for name in owned:
+                covered += int(window.loc[window["slice"] == name, "n_cells"].sum())
+                cells += int(window.loc[(window["slice"] == name) & (window["pattern"] == row["pattern"]), "n_cells"].sum())
+            if covered and cells / covered >= 0.05:
+                n_patients += 1
+        present.append(n_patients)
+    serial = []
+    for patient in patients:
+        owned = [spec.name for spec in specs if (spec.patient or spec.name) == patient]
+        if len(owned) < 2:
+            continue
+        vectors = np.array([[slice_fraction[name][p] for p in names] for name in owned], dtype=np.float64)
+        if len(owned) == 2:
+            value = float(np.corrcoef(vectors)[0, 1])
+        else:
+            coef = np.corrcoef(vectors)
+            value = float(coef[np.triu_indices(len(owned), k=1)].mean())
+        if not np.isfinite(value):
+            value = 0.0
+        serial.append({"patient": patient, "sections": owned, "pearson": round(value, 4)})
     summary = {
         "method": {
             "window_um": window_um,
             "min_cells": min_cells,
             "seed": SEED,
-            "fine_k": fine_k,
-            "silhouette": silhouette_rows,
-            "merged_patterns": g_chosen,
-            "bic": bic_rows,
+            "fine_k": shared_info["local_clusters"],
+            "silhouette": shared_info["shared_silhouette"],
+            "per_slice": shared_info["per_slice"],
+            "merged_patterns": shared_info["shared_k"],
+            "bic": [{"g": row["k"], "bic": row["silhouette"]} for row in shared_info["shared_silhouette"]],
             "feature": feature_info["feature"],
             "shared_genes": feature_info["shared_genes"],
             "expression_components": feature_info["expression_components"],
+            "expression_centering": feature_info.get("expression_centering", ""),
             "he": feature_info["he"],
+            "assignment": "within-slice k-means, then patient-weighted k-means of cluster means",
         },
         "labels": labels,
         "slices": slice_info,
+        "patients": patients,
         "windows": int(len(window)),
         "neighbor_agreement": round(agreement, 4),
+        "patterns_in_two_patients": int(sum(v >= 2 for v in present)),
+        "mean_patients_at_5pct": round(float(np.mean(present)) if present else 0.0, 4),
+        "serial_fraction_correlation": serial,
         "patterns": pattern_rows,
         "slice_pattern_fraction": slice_fraction,
         "slice_correlation": slice_corr,
-        "slice_names": [spec.name for spec in SLICES],
+        "slice_names": [spec.name for spec in specs],
         "cluster_overlay": cluster_overlay,
     }
     _write_tables(out, window, labels, summary, correlation, fine_to_pattern)
@@ -416,9 +549,9 @@ def _figures(fig_dir, window, labels, summary, correlation, fine_to_pattern, cel
     ax.plot([row["g"] for row in bic], [row["bic"] for row in bic], marker="o")
     chosen = summary["method"]["merged_patterns"]
     ax.axvline(chosen, color="#b45309", lw=1)
-    ax.set_xlabel("Number of patterns")
-    ax.set_ylabel("BIC")
-    ax.set_title("Mixture size chosen by BIC")
+    ax.set_xlabel("Shared patterns")
+    ax.set_ylabel("Silhouette of cluster means")
+    ax.set_title("Patterns shared across sections")
     fig.tight_layout()
     fig.savefig(fig_dir / "bic.png", dpi=140)
     plt.close(fig)
@@ -427,9 +560,9 @@ def _figures(fig_dir, window, labels, summary, correlation, fine_to_pattern, cel
     fig, ax = plt.subplots(figsize=(5.2, 3.4))
     ax.plot([row["k"] for row in sil], [row["silhouette"] for row in sil], marker="o")
     ax.axvline(summary["method"]["fine_k"], color="#b45309", lw=1)
-    ax.set_xlabel("Fine clusters")
+    ax.set_xlabel("Shared patterns tried")
     ax.set_ylabel("Silhouette")
-    ax.set_title("Fine cluster size")
+    ax.set_title("Second-step pattern count")
     fig.tight_layout()
     fig.savefig(fig_dir / "silhouette.png", dpi=140)
     plt.close(fig)

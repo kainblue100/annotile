@@ -18,9 +18,9 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-ROOT = Path(r"E:\annotile")
+ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
-DIFF = ("normal_epi", "AT1", "AT2_like", "cil")
+DIFF = ("alveolar", "airway", "normal_epi", "AT1", "AT2_like", "cil")
 GENES = ("EPCAM", "MKI67", "UBE2C", "EGFR", "COL5A2", "PECAM1")
 COLORS = {
     "P1": (244, 162, 97), "P2": (42, 157, 143), "P3": (233, 196, 106), "P4": (231, 111, 81),
@@ -176,7 +176,7 @@ def _draw(slices: list[dict], out: Path) -> None:
                 if len(kids) > 1:
                     draw.line([(fork, py), (fork, ky)], fill=color, width=width)
         for name, (x, y) in points.items():
-            color = COLORS[name]
+            color = COLORS.get(name, (68, 64, 60))
             draw.ellipse((x - 28, y - 28, x + 28, y + 28), fill=color, outline=(30, 30, 30), width=2)
             draw.text((x - 14, y - 12), name, fill=(255, 255, 255), font=label)
             when = next(row["pseudotime"] for row in item["patterns"] if row["pattern"] == name)
@@ -195,11 +195,14 @@ def main() -> None:
         groups[row["slice"]].append(index)
     expression, gene_names = _expression()
     slices = []
-    for slice_name in ("5k", "lc", "luad"):
+    order = list(dict.fromkeys(row["slice"] for row in windows))
+    for slice_name in order:
         index = groups[slice_name]
         local = features[index]
         rows = [windows[i] for i in index]
-        score = np.array([sum(float(row[name]) for name in DIFF) for row in rows])
+        score = np.array([
+            sum(float(row[name]) for name in DIFF if name in row) for row in rows
+        ])
         root_local = int(score.argmax())
         grid = {(int(row["ix"]), int(row["iy"])): i for i, row in enumerate(rows)}
         neighbors = [[] for _ in rows]
@@ -232,7 +235,7 @@ def main() -> None:
                 "windows": len(values),
                 "pseudotime": round(float(np.median(values)), 4),
                 "differentiated": round(float(np.mean([
-                    sum(float(rows[i][name]) for name in DIFF)
+                    sum(float(rows[i][name]) for name in DIFF if name in rows[i])
                     for i, row in enumerate(rows) if row["pattern"] == pattern and np.isfinite(distances[i])
                 ])), 4),
             })
@@ -314,4 +317,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) > 1:
+        globals()["RESULTS"] = Path(sys.argv[1])
     main()
