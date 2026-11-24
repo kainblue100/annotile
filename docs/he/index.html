@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annotile：细胞组成和图像</title>
+<style>
+  body { margin: 0; background: #f6f4ef; color: #1c1917; font: 17px/1.65 "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 34px; line-height: 1.25; margin-bottom: 8px; }
+  h2 { margin-top: 42px; font-size: 22px; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0 22px; background: white; font-size: 14.5px; }
+  th, td { border: 1px solid #e7e5e4; padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #292524; color: white; font-weight: 600; }
+  a { color: #9a3412; }
+  .num { font-variant-numeric: tabular-nums; }
+  .scroll { overflow-x: auto; }
+  svg.bars { width: 100%; height: auto; background: white; border: 1px solid #e7e5e4; display: block; }
+</style>
+</head>
+<body>
+<main>
+<h1>十张有配准的切片，细胞组成和图像</h1>
+<p>表达矩阵没有进入这四轮。特征是粗类细胞比例，加上配准 H&amp;E 在 224 像素裁块上的 7 个数：RGB 均值、RGB 标准差、灰度梯度均值。每个小窗至少 30 个细胞。种子是 42。</p>
+<p>配准留住的 10 张是 LUAD_No17、TSU-20、TSU-21、TSU-23、TSU-24、TSU-25、TSU-30、TSU-35、TSU-36、TSU-41。LUAD_No2、LUAD_No3、LUAD_No14、LUAD_No16、TSU-27、TSU-28、TSU-33 没有配准，没有放进这轮。图像特征只在所选切片全都有图像和配准矩阵时才写入，四轮的汇总里这一项都是打开的，共享基因是 0。</p>
+<p><a href="../index.html">回到 17 张和原来 3 张的对照</a> · <a href="../windows/index.html">17 张、带表达的四种边长</a> · <a href="../takano/index.html">17 张、800 微米的完整结果</a></p>
+
+<h2>细胞怎么分开</h2>
+<p>每一段是该边长内部按细胞数编号的模式，P1 最大。同一编号换了边长就是另一轮聚类。这四轮都没有换成页面上那一版 17 张的完整结果。</p>
+<svg class="bars" viewBox="0 0 760 228" role="img" aria-label="十张切片上，细胞组成和图像在四种边长下的模式占比。最大段在 66% 到 78% 之间。">
+  <title>组成和图像的细胞占比</title>
+  <text x="8" y="32" font-size="15" fill="#1c1917">200 µm</text>
+  <text x="8" y="78" font-size="15" fill="#1c1917">400 µm</text>
+  <text x="8" y="124" font-size="15" fill="#1c1917">800 µm</text>
+  <text x="8" y="170" font-size="15" fill="#1c1917">1600 µm</text>
+  <g transform="translate(88,14)">
+    <rect x="0" y="0" width="425.0" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 76%</text>
+    <rect x="425.0" y="0" width="81.6" height="28" fill="#0f766e"/><text x="437" y="19" fill="white" font-size="13">15%</text>
+    <rect x="506.6" y="0" width="44.6" height="28" fill="#1d4ed8"/>
+    <rect x="551.2" y="0" width="8.8" height="28" fill="#a16207"/>
+  </g>
+  <g transform="translate(88,60)">
+    <rect x="0" y="0" width="438.5" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 78%</text>
+    <rect x="438.5" y="0" width="57.5" height="28" fill="#0f766e"/><text x="446" y="19" fill="white" font-size="12">10%</text>
+    <rect x="496.0" y="0" width="36.1" height="28" fill="#1d4ed8"/>
+    <rect x="532.1" y="0" width="28.0" height="28" fill="#a16207"/>
+  </g>
+  <g transform="translate(88,106)">
+    <rect x="0" y="0" width="392.2" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 70%</text>
+    <rect x="392.2" y="0" width="131.0" height="28" fill="#0f766e"/><text x="404" y="19" fill="white" font-size="13">P2 23%</text>
+    <rect x="523.2" y="0" width="26.3" height="28" fill="#1d4ed8"/>
+    <rect x="549.5" y="0" width="10.6" height="28" fill="#a16207"/>
+  </g>
+  <g transform="translate(88,152)">
+    <rect x="0" y="0" width="370.7" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 66%</text>
+    <rect x="370.7" y="0" width="97.7" height="28" fill="#0f766e"/><text x="382" y="19" fill="white" font-size="13">P2 17%</text>
+    <rect x="468.4" y="0" width="63.6" height="28" fill="#1d4ed8"/><text x="476" y="19" fill="white" font-size="12">11%</text>
+    <rect x="532.0" y="0" width="28.0" height="28" fill="#a16207"/>
+  </g>
+  <g transform="translate(88,198)" font-size="13" fill="#1c1917">
+    <rect x="0" y="-11" width="12" height="12" fill="#9a3412"/><text x="16" y="0">P1</text>
+    <rect x="48" y="-11" width="12" height="12" fill="#0f766e"/><text x="64" y="0">P2</text>
+    <rect x="96" y="-11" width="12" height="12" fill="#1d4ed8"/><text x="112" y="0">P3</text>
+    <rect x="144" y="-11" width="12" height="12" fill="#a16207"/><text x="160" y="0">P4</text>
+  </g>
+</svg>
+
+<h2>放在一起看</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>边长</th><th>小窗</th><th>进入小窗的细胞</th><th>模式</th><th>局部簇</th><th>最大模式</th><th>单一模式切片</th><th>至少两位病人</th><th>平均病人数</th><th>轮廓系数</th><th>邻窗一致</th></tr></thead>
+<tbody>
+<tr><td class="num">200 µm</td><td class="num">3,888</td><td class="num">879,343</td><td class="num">4</td><td class="num">38</td><td class="num">75.9%</td><td class="num">6/10</td><td class="num">4/4</td><td class="num">3.5</td><td class="num">0.263</td><td class="num">95.2%</td></tr>
+<tr><td class="num">400 µm</td><td class="num">1,159</td><td class="num">883,419</td><td class="num">4</td><td class="num">36</td><td class="num">78.3%</td><td class="num">7/10</td><td class="num">3/4</td><td class="num">3.25</td><td class="num">0.240</td><td class="num">95.3%</td></tr>
+<tr><td class="num">800 µm</td><td class="num">376</td><td class="num">884,206</td><td class="num">4</td><td class="num">30</td><td class="num">70.0%</td><td class="num">6/10</td><td class="num">3/4</td><td class="num">3.5</td><td class="num">0.191</td><td class="num">92.6%</td></tr>
+<tr><td class="num">1600 µm</td><td class="num">136</td><td class="num">884,393</td><td class="num">4</td><td class="num">28</td><td class="num">66.2%</td><td class="num">7/10</td><td class="num">3/4</td><td class="num">3.25</td><td class="num">0.183</td><td class="num">90.4%</td></tr>
+</tbody>
+</table>
+</div>
+<p>单一模式切片指这张切片上达到 5% 细胞的模式只有一个。平均病人数是每个模式达到 5% 细胞的病人数的平均。200 微米比 1600 微米少留 5,050 个细胞，这些细胞落在不足 30 个细胞的小窗里。</p>
+<p>四档的最大模式都是肿瘤、成纤维和髓系混在一起，占进入小窗细胞的 66% 到 78%。轮廓系数随边长变大从 0.263 降到 0.183。相邻小窗仍有 90% 以上属于同一模式。400、800 和 1600 微米各有一个模式只出现在 TSU-20，是肺泡大约 45% 的那一段，窗口数分别是 49、11 和 6。</p>
+
+<h2>和带表达的结果比</h2>
+<p>下面左边两列不是重新聚类。模式是在全部 17 张上、带着表达矩阵拟合的，这里只统计这 10 张里的细胞。右边两列是这一页的重新拟合。</p>
+<div class="scroll">
+<table>
+<thead><tr><th>边长</th><th>17 张拟合，这 10 张上的最大模式</th><th>单一模式切片</th><th>组成和图像，重新拟合</th><th>单一模式切片</th></tr></thead>
+<tbody>
+<tr><td class="num">200 µm</td><td class="num">80.3%</td><td class="num">1/10，LUAD_No17</td><td class="num">75.9%</td><td class="num">6/10</td></tr>
+<tr><td class="num">400 µm</td><td class="num">79.0%</td><td class="num">3/10</td><td class="num">78.3%</td><td class="num">7/10</td></tr>
+<tr><td class="num">800 µm</td><td class="num">55.4%</td><td class="num">1/10，TSU-20</td><td class="num">70.0%</td><td class="num">6/10</td></tr>
+<tr><td class="num">1600 µm</td><td class="num">59.0%</td><td class="num">3/10</td><td class="num">66.2%</td><td class="num">7/10</td></tr>
+</tbody>
+</table>
+</div>
+<p>800 微米上，带表达的分配在这 10 张里最大模式占 55.4%，只有 TSU-20 是单一模式。去掉表达、改用组成和图像之后，最大模式占 70.0%，10 张里有 6 张是单一模式。200 和 400 微米的最大模式占比接近，单一模式切片从 1 张和 3 张增加到 6 张和 7 张。</p>
+
+<h2>每个模式里的细胞</h2>
+<p>比例是该模式细胞数中的细胞类型占比。模式编号在每个边长内单独从多到少排列。</p>
+<div class="scroll">
+<table>
+<thead><tr><th>边长</th><th>模式</th><th>细胞</th><th>占比</th><th>小窗</th><th>主要细胞类型</th></tr></thead>
+<tbody>
+<tr><td class="num">200 µm</td><td>P1</td><td class="num">667,297</td><td class="num">75.9%</td><td class="num">2,873</td><td>肿瘤 27.8%、成纤维 16.3%、髓系 15.6%</td></tr>
+<tr><td class="num">200 µm</td><td>P2</td><td class="num">128,168</td><td class="num">14.6%</td><td class="num">693</td><td>成纤维 27.1%、肿瘤 23.8%、T/NK 11.5%</td></tr>
+<tr><td class="num">200 µm</td><td>P3</td><td class="num">70,000</td><td class="num">8.0%</td><td class="num">253</td><td>肺泡 28.5%、成纤维 19.8%、浆细胞 17.3%</td></tr>
+<tr><td class="num">200 µm</td><td>P4</td><td class="num">13,878</td><td class="num">1.6%</td><td class="num">69</td><td>气道 54.5%、成纤维 15.3%</td></tr>
+<tr><td class="num">400 µm</td><td>P1</td><td class="num">691,689</td><td class="num">78.3%</td><td class="num">849</td><td>肿瘤 26.9%、成纤维 16.3%、髓系 15.5%</td></tr>
+<tr><td class="num">400 µm</td><td>P2</td><td class="num">90,682</td><td class="num">10.3%</td><td class="num">101</td><td>肿瘤 25.7%、成纤维 24.4%、T/NK 14.2%</td></tr>
+<tr><td class="num">400 µm</td><td>P3</td><td class="num">56,864</td><td class="num">6.4%</td><td class="num">160</td><td>成纤维 26.9%、肿瘤 19.4%、肺泡 13.9%</td></tr>
+<tr><td class="num">400 µm</td><td>P4</td><td class="num">44,184</td><td class="num">5.0%</td><td class="num">49</td><td>肺泡 45.3%、成纤维 22.1%；只在 TSU-20</td></tr>
+<tr><td class="num">800 µm</td><td>P1</td><td class="num">619,197</td><td class="num">70.0%</td><td class="num">217</td><td>肿瘤 27.4%、成纤维 15.2%、髓系 14.6%</td></tr>
+<tr><td class="num">800 µm</td><td>P2</td><td class="num">206,838</td><td class="num">23.4%</td><td class="num">108</td><td>成纤维 25.9%、肿瘤 23.4%、髓系 15.2%</td></tr>
+<tr><td class="num">800 µm</td><td>P3</td><td class="num">41,486</td><td class="num">4.7%</td><td class="num">11</td><td>肺泡 46.0%、成纤维 21.9%；只在 TSU-20</td></tr>
+<tr><td class="num">800 µm</td><td>P4</td><td class="num">16,685</td><td class="num">1.9%</td><td class="num">40</td><td>成纤维 22.5%、肿瘤 19.2%、内皮 14.2%</td></tr>
+<tr><td class="num">1600 µm</td><td>P1</td><td class="num">585,398</td><td class="num">66.2%</td><td class="num">62</td><td>肿瘤 30.9%、髓系 15.7%、成纤维 14.4%</td></tr>
+<tr><td class="num">1600 µm</td><td>P2</td><td class="num">154,342</td><td class="num">17.5%</td><td class="num">44</td><td>成纤维 27.8%、肿瘤 22.6%、髓系 13.8%</td></tr>
+<tr><td class="num">1600 µm</td><td>P3</td><td class="num">100,434</td><td class="num">11.4%</td><td class="num">24</td><td>成纤维 23.3%、内皮 19.6%、气道 16.2%</td></tr>
+<tr><td class="num">1600 µm</td><td>P4</td><td class="num">44,219</td><td class="num">5.0%</td><td class="num">6</td><td>肺泡 45.4%、成纤维 22.1%；只在 TSU-20</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>每张切片</h2>
+<p>格子里是该切片达到 5% 细胞的模式，按细胞数从多到少。100% 表示这张切片的细胞都落在这一个模式里。</p>
+<div class="scroll">
+<table>
+<thead><tr><th>切片</th><th>200 µm</th><th>400 µm</th><th>800 µm</th><th>1600 µm</th></tr></thead>
+<tbody>
+<tr><td>LUAD_No17</td><td>P1 69%、P3 31%</td><td>P1 81%、P2 19%</td><td>P2 100%</td><td>P1 74%、P2 26%</td></tr>
+<tr><td>TSU-20</td><td>P3 100%</td><td>P4 100%</td><td>P3 94%、P2 6%</td><td>P4 100%</td></tr>
+<tr><td>TSU-23</td><td>P2 93%、P1 7%</td><td>P3 63%、P2 37%</td><td>P2 69%、P4 31%</td><td>P2 100%</td></tr>
+<tr><td>TSU-25</td><td>P1 83%、P4 17%</td><td>P1 100%</td><td>P1 94%、P4 6%</td><td>P3 100%</td></tr>
+<tr><td>TSU-21</td><td>P1 100%</td><td>P1 100%</td><td>P1 100%</td><td>P1 100%</td></tr>
+<tr><td>TSU-24</td><td>P1 100%</td><td>P1 100%</td><td>P1 100%</td><td>P1 100%</td></tr>
+<tr><td>TSU-35</td><td>P1 90%、P4 10%</td><td>P1 100%</td><td>P1 100%</td><td>P3 59%、P1 41%</td></tr>
+<tr><td>TSU-30</td><td>P1 100%</td><td>P1 100%</td><td>P1 100%</td><td>P1 78%、P3 22%</td></tr>
+<tr><td>TSU-36</td><td>P2 100%</td><td>P3 100%</td><td>P2 84%、P4 16%</td><td>P2 100%</td></tr>
+<tr><td>TSU-41</td><td>P2 100%</td><td>P2 85%、P3 15%</td><td>P2 100%</td><td>P2 100%</td></tr>
+</tbody>
+</table>
+</div>
+<p>TSU-21 和 TSU-24 在四档里都是单一模式。TSU-20 在 200、400 和 1600 微米是单一模式，800 微米是 94% 和 6%。</p>
+</main>
+</body>
+</html>
