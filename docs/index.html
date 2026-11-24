@@ -15,13 +15,16 @@
   th { background: #292524; color: white; font-weight: 600; }
   a { color: #9a3412; }
   .num { font-variant-numeric: tabular-nums; }
+  .pick td { background: #fff7ed; }
+  .scroll { overflow-x: auto; }
+  svg.bars { width: 100%; height: auto; background: white; border: 1px solid #e7e5e4; display: block; }
 </style>
 </head>
 <body>
 <main>
 <h1>17 张 Takano 切片，和原来 3 张片子</h1>
 <p>17 张是单独跑的一轮，没有把 CosMx 和另外三张公开 Xenium 混进去。原来 3 张的完整页面还在。两轮的数字都来自种子 42。</p>
-<p><a href="takano/index.html">17 张的完整结果</a> · <a href="three/index.html">原来 3 张的完整结果</a></p>
+<p><a href="takano/index.html">17 张的完整结果</a> · <a href="three/index.html">原来 3 张的完整结果</a> · <a href="windows/index.html">四种小窗边长</a></p>
 
 <h2>放在一起看</h2>
 <table>
@@ -48,6 +51,66 @@
 <p>17 张没有配准后的 H&amp;E，特征里只有细胞组成和表达。原来 3 张有颜色和纹理。注释是每张切片单独聚类后人工命名的，名字先收成粗类再放在一起。</p>
 <p>用现在这套代码把原来 3 张重跑，也会从 8 个模式收到 4 个，P1 占留下细胞的 58%，轮廓系数在 k=4 时是 0.143。所以模式变少有一部分来自第二次 k-means 选了最小的 k。即便如此，重跑后的三张每张仍有 2 或 3 个模式。6 张塌成单一模式，是 17 张这一轮自己的结果。</p>
 <p>第二次聚类的轮廓系数：17 张上 k=4 为 0.141，k=6 为 0.110，k=8 为 0.126，按高出 0.01 才换更大 k 的规则留下 4。这个系数低，4 个模式不是分得很开。</p>
+
+<h2>小窗边长</h2>
+<p>同一批 17 张、同一套特征、种子 42，把方格边长改成 200、800 和 1600 微米再各跑一轮。每个小窗仍至少 30 个细胞。400 微米是上面这一列。下图每一段是该边长内部按细胞数编号的模式，P1 最大。编号只在同一条里可比。</p>
+<svg class="bars" viewBox="0 0 760 228" role="img" aria-label="200、400、800、1600 微米下各模式占进入小窗细胞的比例。800 微米的最大段是 52%。">
+  <title>四种边长的细胞占比</title>
+  <rect x="0" y="96" width="760" height="44" fill="#fff7ed"/>
+  <text x="8" y="32" font-size="15" fill="#1c1917">200 µm</text>
+  <text x="8" y="78" font-size="15" fill="#1c1917">400 µm</text>
+  <text x="8" y="124" font-size="15" font-weight="700" fill="#9a3412">800 µm</text>
+  <text x="8" y="170" font-size="15" fill="#1c1917">1600 µm</text>
+  <g transform="translate(88,14)">
+    <rect x="0" y="0" width="481.9" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 86%</text>
+    <rect x="481.9" y="0" width="26.6" height="28" fill="#0f766e"/>
+    <rect x="508.5" y="0" width="22.3" height="28" fill="#1d4ed8"/>
+    <rect x="530.8" y="0" width="17.9" height="28" fill="#a16207"/>
+    <rect x="548.7" y="0" width="8.8" height="28" fill="#7c3aed"/>
+    <rect x="557.5" y="0" width="2.5" height="28" fill="#78716c"/>
+  </g>
+  <g transform="translate(88,60)">
+    <rect x="0" y="0" width="487.2" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 87%</text>
+    <rect x="487.2" y="0" width="38.7" height="28" fill="#0f766e"/>
+    <rect x="525.9" y="0" width="28.6" height="28" fill="#1d4ed8"/>
+    <rect x="554.5" y="0" width="5.5" height="28" fill="#a16207"/>
+  </g>
+  <g transform="translate(88,106)">
+    <rect x="0" y="0" width="293.2" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 52%</text>
+    <rect x="293.2" y="0" width="207.1" height="28" fill="#0f766e"/><text x="305.2" y="19" fill="white" font-size="13">P2 37%</text>
+    <rect x="500.3" y="0" width="58.5" height="28" fill="#1d4ed8"/><text x="508" y="19" fill="white" font-size="12">10%</text>
+    <rect x="558.8" y="0" width="1.2" height="28" fill="#a16207"/>
+  </g>
+  <g transform="translate(88,152)">
+    <rect x="0" y="0" width="220.1" height="28" fill="#9a3412"/><text x="12" y="19" fill="white" font-size="13">P1 39%</text>
+    <rect x="220.1" y="0" width="184.8" height="28" fill="#0f766e"/><text x="232" y="19" fill="white" font-size="13">P2 33%</text>
+    <rect x="404.9" y="0" width="130.9" height="28" fill="#1d4ed8"/><text x="416" y="19" fill="white" font-size="13">P3 23%</text>
+    <rect x="535.8" y="0" width="14.2" height="28" fill="#a16207"/>
+    <rect x="550.0" y="0" width="5.1" height="28" fill="#7c3aed"/>
+    <rect x="555.1" y="0" width="4.9" height="28" fill="#78716c"/>
+  </g>
+  <g transform="translate(88,198)" font-size="13" fill="#1c1917">
+    <rect x="0" y="-11" width="12" height="12" fill="#9a3412"/><text x="16" y="0">P1</text>
+    <rect x="48" y="-11" width="12" height="12" fill="#0f766e"/><text x="64" y="0">P2</text>
+    <rect x="96" y="-11" width="12" height="12" fill="#1d4ed8"/><text x="112" y="0">P3</text>
+    <rect x="144" y="-11" width="12" height="12" fill="#a16207"/><text x="160" y="0">P4</text>
+    <rect x="192" y="-11" width="12" height="12" fill="#7c3aed"/><text x="208" y="0">P5</text>
+    <rect x="240" y="-11" width="12" height="12" fill="#78716c"/><text x="256" y="0">P6</text>
+  </g>
+</svg>
+<div class="scroll">
+<table>
+<thead><tr><th>边长</th><th>小窗</th><th>进入小窗的细胞</th><th>模式</th><th>最大模式</th><th>单一模式切片</th><th>至少两位病人</th><th>平均病人数</th><th>轮廓系数</th><th>邻窗一致</th></tr></thead>
+<tbody>
+<tr><td class="num">200 µm</td><td class="num">10,091</td><td class="num">2,372,112</td><td class="num">6</td><td class="num">86.0%</td><td class="num">2/17</td><td class="num">6/6</td><td class="num">6.2</td><td class="num">0.168</td><td class="num">91.9%</td></tr>
+<tr><td class="num">400 µm，已发布</td><td class="num">2,872</td><td class="num">2,380,069</td><td class="num">4</td><td class="num">87.0%</td><td class="num">6/17</td><td class="num">4/4</td><td class="num">7.5</td><td class="num">0.141</td><td class="num">92.3%</td></tr>
+<tr class="pick"><td class="num">800 µm</td><td class="num">879</td><td class="num">2,381,665</td><td class="num">4</td><td class="num">52.4%</td><td class="num">1/17</td><td class="num">3/4</td><td class="num">9.5</td><td class="num">0.096</td><td class="num">78.0%</td></tr>
+<tr><td class="num">1600 µm</td><td class="num">291</td><td class="num">2,382,015</td><td class="num">6</td><td class="num">39.3%</td><td class="num">3/17</td><td class="num">4/6</td><td class="num">5.8</td><td class="num">0.081</td><td class="num">78.5%</td></tr>
+</tbody>
+</table>
+</div>
+<p>800 微米把最大模式从 87% 降到 52%，单一模式切片从 6 张降到 1 张（TSU-20）。三个主要模式平均出现在 9.5 位病人里。第四个模式只有 5 个小窗。200 微米的轮廓系数最高，少数组织拆成了免疫、血管间质、肺泡和气道，最大模式仍占 86%。1600 微米前三段是 39%、33% 和 23%，轮廓系数降到 0.081，另外两段各是 1 个和 2 个小窗。</p>
+<p>细胞组成和每张切片的比例在<a href="windows/index.html">四种边长</a>。</p>
 </main>
 </body>
 </html>
