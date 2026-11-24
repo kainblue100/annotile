@@ -32,6 +32,14 @@ TYPE_COLOR = {
     "plasma": "#f9a8d4",
     "mph": "#b45309",
     "mast": "#78716c",
+    "tumor": "#c2410c",
+    "alveolar": "#eab308",
+    "airway": "#0f766e",
+    "fibroblast": "#65a30d",
+    "endothelial": "#1d4ed8",
+    "myeloid": "#b45309",
+    "t_nk": "#7c3aed",
+    "b_cell": "#db2777",
 }
 
 

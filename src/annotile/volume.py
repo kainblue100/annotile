@@ -57,8 +57,10 @@ def _densest(cells: pd.DataFrame, size: float) -> pd.DataFrame:
     ys = cells["y"].to_numpy()
     best = cells.iloc[0:0]
     best_n = -1
-    x0s = np.arange(xs.min(), max(xs.max() - size, xs.min()) + 1e-6, 8.0)
-    y0s = np.arange(ys.min(), max(ys.max() - size, ys.min()) + 1e-6, 8.0)
+    span = max(float(xs.max() - xs.min()), float(ys.max() - ys.min()), 1.0)
+    step = 8.0 if span < 2500 else 40.0
+    x0s = np.arange(xs.min(), max(xs.max() - size, xs.min()) + 1e-6, step)
+    y0s = np.arange(ys.min(), max(ys.max() - size, ys.min()) + 1e-6, step)
     for x0 in x0s:
         for y0 in y0s:
             chosen = cells[(cells["x"] >= x0) & (cells["x"] < x0 + size) & (cells["y"] >= y0) & (cells["y"] < y0 + size)]

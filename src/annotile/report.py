@@ -19,6 +19,28 @@ def _table(headers: list[str], rows: list[list[str]]) -> str:
     return "<table><thead><tr>" + head + "</tr></thead><tbody>" + "".join(body) + "</tbody></table>"
 
 
+def _he_line(method: dict) -> str:
+    if method.get("he"):
+        return "配准后的 H&amp;E 颜色和纹理进了共同特征。"
+    return "这一轮的切片没有配准后的 H&amp;E，共同特征里不含染色图像。"
+
+
+def _cohort_lead(summary: dict, n_slices: int, n_patients: int) -> str:
+    names = [item["name"] for item in summary["slices"]]
+    takano = [name for name in names if name.startswith("tk_")]
+    if len(takano) == n_slices and n_slices:
+        return (
+            f"这一版队列是 Takano 等人 <a href=\"https://doi.org/10.1038/s41467-024-54671-7\">Nature Communications 2024</a> 的 {n_slices} 张 Xenium 肺腺癌，{n_patients} 个病人标签，每张切片单独一位。"
+            "细胞类型是原作者按切片聚类后写的名字，这里收成同一套粗类。"
+            "另外三张公开 Xenium 和 CosMx 没有放进这一轮，基因用的是这 17 张自己的面板。"
+            "和原来三张片子的对照写在<a href=\"../index.html\">汇总页</a>。"
+        )
+    return (
+        f"这一版队列共 {n_slices} 张切片、{n_patients} 个病人。"
+        "三张公开的人肺 Xenium 切片，细胞类型来自 <a href=\"https://github.com/D10ny3u3/GHIST_input\">GHIST_input</a>，坐标和表达来自 10x Genomics。"
+    )
+
+
 def render(summary: dict, figures: set[str] | None = None) -> str:
     method = summary["method"]
     sil = ", ".join(f"k={row['k']} → {row['silhouette']:.3f}" for row in method["silhouette"])
@@ -164,12 +186,12 @@ def render(summary: dict, figures: set[str] | None = None) -> str:
 <main>
 <h1>Annotile</h1>
 <p>把已经标好细胞类型的空间切片划成小窗，把细胞类型和共有基因表达合在一起聚类，得到可以在切片之间比较的组织模式。</p>
-<p>这一版队列共 {n_slices} 张切片、{n_patients} 个病人。三张公开的人肺 Xenium 切片，细胞类型来自 <a href="https://github.com/D10ny3u3/GHIST_input">GHIST_input</a>，坐标和表达来自 10x Genomics。He 等人 <a href="https://doi.org/10.1038/s41587-022-01483-z">Nature Biotechnology 2022</a> 的 CosMx 非小细胞肺癌是五个病人、八张切片（<a href="https://doi.org/10.6084/m9.figshare.25976224">10.6084/m9.figshare.25976224</a>）。Takano 等人 <a href="https://doi.org/10.1038/s41467-024-54671-7">Nature Communications 2024</a> 的 17 张 Xenium 肺腺癌也在里面：5 张浸润性、12 张早期，每张切片一位病人，细胞类型是原作者按切片聚类后写上的名字。只在三张 Xenium 上跑的时候，相邻小窗一致率是 83.6%，八个模式里只有一个在三张切片上都达到 5% 的细胞。</p>
-<p>聚类分两步，对应 Wang、Venet、Sotiriou 等人 <a href="https://doi.org/10.1038/s41467-024-54145-w">Nature Communications 2024</a> 的做法：每张切片内部先做 k-means，再把这些局部簇的平均特征放到一起做第二次 k-means，得到切片之间共用的模式。一个病人若有多张切片，这些切片的总权重等于只有一张切片的病人。细胞类型先收成同一套粗类，否则各批数据的名字对不上。CosMx 没有和 Xenium 配准的 H&amp;E，共同特征里不含 H&amp;E。种子是 {method['seed']}。</p>
+<p>{_cohort_lead(summary, n_slices, n_patients)}</p>
+<p>聚类分两步，对应 Wang、Venet、Sotiriou 等人 <a href="https://doi.org/10.1038/s41467-024-54145-w">Nature Communications 2024</a> 的做法：每张切片内部先做 k-means，再把这些局部簇的平均特征放到一起做第二次 k-means，得到切片之间共用的模式。一个病人若有多张切片，这些切片的总权重等于只有一张切片的病人。细胞类型先收成同一套粗类，否则各批数据的名字对不上。{_he_line(method)}种子是 {method['seed']}。</p>
 
 <h2><span class="step">数据</span></h2>
 <ul>{sources}</ul>
-<p>注释表只有细胞编号和类型。坐标按细胞编号拼回去。三张切片的编号匹配率都在下面的表里。随机种子是 {method['seed']}。</p>
+<p>注释表只有细胞编号和类型。坐标按细胞编号拼回去。各张切片的编号匹配率都在下面的表里。随机种子是 {method['seed']}。</p>
 
 <h2><span class="step">1. 留下可用的细胞注释</span></h2>
 <p>注释说明里，<code>low_feat_cell</code>、<code>mph_CXCL9_region</code>、<code>fib?</code>，以及 CCL19 混合群（表中的 <code>lymph_endo?CCL19</code>）被标成混合或不采用。带问号、又不在保留名单里的标签也去掉。说明明确写了对照图像后保留的 <code>epi?</code> 和 <code>endo?</code> 留在分析里。<code>fib_SYNPO2</code> 按原表保留，说明里把它进一步看成血管平滑肌。Takano 这 17 张里，未命名簇、双细胞、把整张切片免疫细胞合成一类的 <code>immune</code>，以及一个成纤维和内皮混在一起的生态位簇，也去掉。</p>

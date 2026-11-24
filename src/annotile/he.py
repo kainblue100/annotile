@@ -11,7 +11,7 @@ import tifffile
 import zarr
 from PIL import Image
 
-from annotile.data import SLICES
+from annotile.data import load_cohort
 from annotile.pipeline import WINDOW_UM
 
 _OPEN = {}
@@ -67,7 +67,7 @@ def _crop_array(image, matrix: np.ndarray, ix: int, iy: int, window_um: float) -
 
 def _spec_paths(root: Path) -> dict[str, tuple[Path, Path]]:
     found = {}
-    for spec in SLICES:
+    for spec in load_cohort(root):
         image = root / spec.he_image
         align = root / spec.he_alignment
         if image.is_file() and align.is_file():
@@ -93,7 +93,7 @@ def _matrix_for(image, matrix: np.ndarray, rows: pd.DataFrame, window_um: float)
 def he_block(root: Path, windows: pd.DataFrame, window_um: float = WINDOW_UM) -> tuple[np.ndarray | None, dict]:
     paths = _spec_paths(root)
     info = {"he_slices": sorted(paths), "alignment": {}}
-    if len(paths) != len(SLICES):
+    if len(paths) != len(load_cohort(root)):
         return None, info
     chosen = {}
     features = np.zeros((len(windows), 7), dtype=np.float64)

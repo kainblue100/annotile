@@ -32,6 +32,7 @@ def read_matrix(path: Path):
         indptr = np.asarray(group["indptr"][:])
         barcodes = _text(group["barcodes"][:])
         names = _text(group["features"]["name"][:])
+        kinds = _text(group["features"]["feature_type"][:]) if "feature_type" in group["features"] else []
         if "shape" in group:
             shape = tuple(int(v) for v in group["shape"][:])
         else:
@@ -39,6 +40,10 @@ def read_matrix(path: Path):
     if len(indptr) != shape[1] + 1:
         raise RuntimeError(f"{path.name} is not stored with one column per cell")
     matrix = sparse.csc_matrix((data, indices, indptr), shape=shape).T.tocsr()
+    if kinds:
+        keep = [i for i, kind in enumerate(kinds) if kind == "Gene Expression"]
+        matrix = matrix[:, keep]
+        names = [names[i] for i in keep]
     return barcodes, names, matrix
 
 

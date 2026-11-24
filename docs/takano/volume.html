@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annotile 模式的三维模型</title>
+<style>
+  body { margin: 0; background: #f6f4ef; color: #1c1917; font: 16px/1.6 "Microsoft YaHei", sans-serif; }
+  header { max-width: 1100px; margin: 0 auto; padding: 28px 20px 0; }
+  a { color: #9a3412; }
+  #bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  button { border: 2px solid #e7e5e4; background: white; border-radius: 8px; padding: 6px 12px; cursor: pointer; font: inherit; }
+  button.on { color: white; }
+  #view { width: min(1100px, calc(100% - 24px)); height: 72vh; margin: 0 auto 12px; display: block; background: white; border: 1px solid #e7e5e4; }
+  p { max-width: 78ch; }
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">返回说明页</a></p>
+<h1>每个模式的三维细胞模型</h1>
+<p id="caption"></p>
+<div id="bar"></div>
+</header>
+<canvas id="view"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const DATA = {"thickness_um": 10.0, "patterns": [{"pattern": "P1", "slice": "tk_luad2", "fine": 2, "patch_um": 40.0, "cells_in_patch": 55, "cells": [{"x": 35.33, "y": 39.74, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 0.0, "y": 10.93, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 0.16, "y": 15.12, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 1.91, "y": 30.15, "z": 6.99, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 1.48, "y": 20.85, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 0.88, "y": 25.21, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 1.75, "y": 39.14, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 19.37, "y": 39.42, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 29.41, "y": 7.78, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 33.56, "y": 1.91, "z": 8.72, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 37.22, "y": 10.42, "z": 4.72, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 31.53, "y": 13.64, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 25.84, "y": 4.25, "z": 8.87, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 25.9, "y": 12.26, "z": 9.3, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 27.13, "y": 0.0, "z": 0.45, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 37.8, "y": 17.21, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 21.56, "y": 10.69, "z": 2.03, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 28.64, "y": 18.68, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 20.29, "y": 5.9, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 24.38, "y": 16.82, "z": 4.3, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 33.57, "y": 20.47, "z": 8.4, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 16.74, "y": 12.36, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 19.24, "y": 16.55, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 26.87, "y": 23.27, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 16.13, "y": 2.67, "z": 4.29, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 35.96, "y": 25.24, "z": 3.14, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 13.95, "y": 8.0, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 31.04, "y": 27.12, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 20.53, "y": 22.91, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 15.78, "y": 19.4, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 39.13, "y": 28.7, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 10.7, "y": 4.5, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 12.24, "y": 14.38, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 25.16, "y": 28.52, "z": 3.74, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 33.04, "y": 31.55, "z": 4.62, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 16.66, "y": 26.97, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 37.42, "y": 32.99, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 6.44, "y": 7.5, "z": 2.24, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 9.69, "y": 19.24, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 7.3, "y": 13.24, "z": 6.98, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 12.16, "y": 23.96, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 23.9, "y": 31.9, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 27.28, "y": 33.76, "z": 6.85, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 20.34, "y": 32.68, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 3.14, "y": 2.75, "z": 8.5, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 3.56, "y": 17.25, "z": 9.03, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 6.38, "y": 24.18, "z": 3.89, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 13.53, "y": 31.74, "z": 7.67, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 16.33, "y": 35.48, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 9.09, "y": 29.81, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 11.55, "y": 37.07, "z": 3.51, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 5.98, "y": 34.89, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 39.3, "y": 37.24, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 26.7, "y": 38.82, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 31.77, "y": 36.09, "z": 8.81, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}]}, {"pattern": "P2", "slice": "tk_tsu20", "fine": 21, "patch_um": 40.0, "cells_in_patch": 31, "cells": [{"x": 36.4, "y": 8.64, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 39.22, "y": 16.32, "z": 3.4, "r": 6.0, "type": "endothelial", "color": "#1d4ed8"}, {"x": 35.34, "y": 19.24, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 39.18, "y": 31.19, "z": 8.2, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 0.0, "y": 15.14, "z": 0.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 1.97, "y": 9.73, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 2.93, "y": 4.13, "z": 0.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 8.92, "y": 7.52, "z": 7.66, "r": 6.0, "type": "myeloid", "color": "#b45309"}, {"x": 9.85, "y": 28.87, "z": 0.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 8.04, "y": 36.75, "z": 7.81, "r": 5.0, "type": "plasma", "color": "#f9a8d4"}, {"x": 10.17, "y": 33.11, "z": 0.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 11.8, "y": 22.82, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 11.51, "y": 0.76, "z": 5.46, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 12.95, "y": 14.25, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 13.72, "y": 37.13, "z": 3.86, "r": 6.0, "type": "fibroblast", "color": "#65a30d"}, {"x": 16.22, "y": 9.38, "z": 1.1, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 17.06, "y": 31.86, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 19.03, "y": 4.72, "z": 0.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 19.65, "y": 25.28, "z": 4.49, "r": 5.0, "type": "plasma", "color": "#f9a8d4"}, {"x": 24.24, "y": 29.18, "z": 0.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 24.0, "y": 15.61, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 25.39, "y": 9.81, "z": 5.46, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 26.5, "y": 0.0, "z": 10.0, "r": 5.0, "type": "plasma", "color": "#f9a8d4"}, {"x": 28.65, "y": 23.87, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 4.15, "y": 33.87, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 3.04, "y": 22.73, "z": 6.22, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 31.26, "y": 5.63, "z": 6.41, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 31.8, "y": 11.78, "z": 0.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 30.33, "y": 16.91, "z": 0.5, "r": 6.0, "type": "alveolar", "color": "#eab308"}, {"x": 33.03, "y": 28.22, "z": 1.18, "r": 6.0, "type": "fibroblast", "color": "#65a30d"}, {"x": 31.07, "y": 36.38, "z": 10.0, "r": 6.0, "type": "alveolar", "color": "#eab308"}]}, {"pattern": "P3", "slice": "tk_luad3", "fine": 4, "patch_um": 40.0, "cells_in_patch": 51, "cells": [{"x": 30.64, "y": 38.29, "z": 6.16, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 25.38, "y": 37.79, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 33.72, "y": 34.53, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 27.67, "y": 29.76, "z": 5.63, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 33.1, "y": 30.16, "z": 0.0, "r": 6.0, "type": "fibroblast", "color": "#65a30d"}, {"x": 20.72, "y": 32.68, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 18.03, "y": 38.89, "z": 6.87, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 36.89, "y": 32.32, "z": 10.0, "r": 6.0, "type": "endothelial", "color": "#1d4ed8"}, {"x": 38.78, "y": 29.41, "z": 0.0, "r": 6.0, "type": "endothelial", "color": "#1d4ed8"}, {"x": 19.99, "y": 27.31, "z": 0.63, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 26.7, "y": 23.66, "z": 0.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 22.45, "y": 24.41, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 36.59, "y": 23.79, "z": 7.42, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 15.09, "y": 29.05, "z": 7.8, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 32.44, "y": 22.93, "z": 3.01, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 11.32, "y": 36.81, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 11.21, "y": 32.14, "z": 4.72, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 18.59, "y": 22.03, "z": 0.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 23.88, "y": 19.5, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 28.3, "y": 15.47, "z": 4.93, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 38.85, "y": 20.18, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 25.06, "y": 16.06, "z": 0.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 10.74, "y": 24.41, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 32.12, "y": 13.6, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 14.39, "y": 19.45, "z": 5.63, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 6.28, "y": 33.19, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 4.45, "y": 38.08, "z": 8.29, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 37.81, "y": 14.72, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 5.8, "y": 29.14, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 20.66, "y": 13.53, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 1.85, "y": 32.6, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 5.84, "y": 23.95, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 2.28, "y": 27.01, "z": 0.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 7.6, "y": 20.06, "z": 0.22, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 4.25, "y": 20.22, "z": 3.95, "r": 6.0, "type": "endothelial", "color": "#1d4ed8"}, {"x": 16.53, "y": 10.64, "z": 0.0, "r": 6.0, "type": "myeloid", "color": "#b45309"}, {"x": 8.53, "y": 14.74, "z": 0.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 0.0, "y": 23.51, "z": 7.46, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 12.07, "y": 9.74, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 1.32, "y": 14.01, "z": 10.0, "r": 6.0, "type": "endothelial", "color": "#1d4ed8"}, {"x": 3.7, "y": 7.16, "z": 4.12, "r": 6.0, "type": "endothelial", "color": "#1d4ed8"}, {"x": 3.57, "y": 0.0, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 11.64, "y": 0.29, "z": 6.99, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 8.22, "y": 5.01, "z": 0.33, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 19.34, "y": 0.01, "z": 10.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 38.16, "y": 0.53, "z": 10.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 23.98, "y": 2.4, "z": 4.28, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 33.6, "y": 5.3, "z": 0.0, "r": 6.0, "type": "t_nk", "color": "#7c3aed"}, {"x": 28.03, "y": 5.18, "z": 9.99, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 14.38, "y": 3.93, "z": 0.0, "r": 6.0, "type": "b_cell", "color": "#db2777"}, {"x": 19.65, "y": 5.79, "z": 2.39, "r": 6.0, "type": "b_cell", "color": "#db2777"}]}, {"pattern": "P4", "slice": "tk_luad16", "fine": 14, "patch_um": 40.0, "cells_in_patch": 57, "cells": [{"x": 37.13, "y": 0.0, "z": 6.51, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 32.01, "y": 2.37, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 34.89, "y": 6.79, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 35.03, "y": 10.84, "z": 3.97, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 37.6, "y": 14.34, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 27.49, "y": 15.53, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 33.27, "y": 17.05, "z": 6.78, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 29.86, "y": 21.65, "z": 9.63, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 37.23, "y": 22.95, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 29.91, "y": 26.15, "z": 0.8, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 37.66, "y": 27.94, "z": 5.64, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 34.24, "y": 28.14, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 30.52, "y": 30.68, "z": 6.19, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 26.49, "y": 30.21, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 34.71, "y": 37.75, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 37.07, "y": 34.19, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 27.27, "y": 36.76, "z": 3.52, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 32.48, "y": 33.77, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 18.41, "y": 12.98, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 5.48, "y": 13.61, "z": 6.89, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 13.9, "y": 15.31, "z": 3.09, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 0.58, "y": 16.37, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 5.52, "y": 17.12, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 18.29, "y": 17.48, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 21.95, "y": 18.34, "z": 4.88, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 10.64, "y": 19.45, "z": 1.02, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 5.63, "y": 22.14, "z": 5.79, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 17.57, "y": 22.98, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 10.56, "y": 26.01, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 14.71, "y": 28.89, "z": 7.86, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 18.84, "y": 28.75, "z": 9.11, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 5.97, "y": 30.16, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 8.63, "y": 32.51, "z": 3.22, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 21.16, "y": 34.59, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 13.45, "y": 33.98, "z": 5.51, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 9.25, "y": 37.23, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 16.78, "y": 36.27, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 12.98, "y": 38.38, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 2.9, "y": 37.91, "z": 2.44, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 19.98, "y": 39.85, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 23.87, "y": 23.09, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 23.08, "y": 29.49, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 3.05, "y": 3.36, "z": 3.11, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 8.49, "y": 0.78, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 1.77, "y": 8.36, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 5.85, "y": 6.84, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 0.0, "y": 11.2, "z": 0.82, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 14.89, "y": 1.3, "z": 5.74, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 10.9, "y": 6.18, "z": 8.82, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 9.45, "y": 11.24, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 16.05, "y": 4.43, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 20.13, "y": 2.88, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 16.34, "y": 8.87, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 20.8, "y": 6.59, "z": 6.7, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 21.77, "y": 11.04, "z": 0.49, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 25.71, "y": 4.07, "z": 10.0, "r": 6.0, "type": "airway", "color": "#0f766e"}, {"x": 27.43, "y": 9.7, "z": 0.0, "r": 6.0, "type": "airway", "color": "#0f766e"}]}]};
+const PATTERN = {"P1": "#f4a261", "P2": "#2a9d8f", "P3": "#e9c46a", "P4": "#e76f51", "P5": "#6d597a", "P6": "#457b9d", "P7": "#b5838d", "P8": "#264653"};
+const ZSCALE = 4;
+const canvas = document.getElementById("view");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio || 1);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 5000);
+camera.position.set(80, 90, 120);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.set(20, 20, 20);
+scene.add(new THREE.AmbientLight(0xffffff, 0.72));
+const sun = new THREE.DirectionalLight(0xffffff, 0.75);
+sun.position.set(40, 80, 60);
+scene.add(sun);
+const root = new THREE.Group();
+scene.add(root);
+function sphere(cell, scale, opacity) {
+  const mesh = new THREE.Mesh(
+    new THREE.SphereGeometry(cell.r * scale, 22, 16),
+    new THREE.MeshPhongMaterial({ color: cell.color, transparent: opacity < 1, opacity, shininess: 30 })
+  );
+  mesh.position.set(cell.x, cell.z * ZSCALE, cell.y);
+  return mesh;
+}
+function show(model) {
+  while (root.children.length) root.remove(root.children[0]);
+  const slab = new THREE.Mesh(
+    new THREE.BoxGeometry(model.patch_um, DATA.thickness_um * ZSCALE, model.patch_um),
+    new THREE.MeshPhongMaterial({ color: 0xe7e5e4, transparent: true, opacity: 0.28, depthWrite: false })
+  );
+  slab.position.set(model.patch_um / 2, DATA.thickness_um * ZSCALE / 2, model.patch_um / 2);
+  root.add(slab);
+  model.cells.forEach((cell) => {
+    root.add(sphere(cell, 1.12, 0.18));
+    root.add(sphere(cell, 1, 0.94));
+    const nucleus = sphere(cell, 0.42, 0.85);
+    nucleus.material = new THREE.MeshPhongMaterial({ color: 0x1c1917 });
+    root.add(nucleus);
+  });
+  controls.target.set(model.patch_um / 2, DATA.thickness_um * ZSCALE / 2, model.patch_um / 2);
+  document.getElementById("caption").textContent =
+    model.pattern + " · " + model.slice + " · 细簇 F" + model.fine +
+    " · " + model.cells_in_patch + " 个细胞，取自该模式里最密的 " + model.patch_um +
+    " µm 见方。灰色盒子是 " + DATA.thickness_um + " µm 厚的切片。显示时深度放大了 " + ZSCALE + " 倍，球的半径仍是微米。拖动可旋转。";
+  document.querySelectorAll("#bar button").forEach((button) => {
+    const on = button.dataset.pattern === model.pattern;
+    button.classList.toggle("on", on);
+    button.style.background = on ? PATTERN[model.pattern] : "white";
+  });
+}
+const bar = document.getElementById("bar");
+DATA.patterns.forEach((model, index) => {
+  const button = document.createElement("button");
+  button.textContent = model.pattern;
+  button.dataset.pattern = model.pattern;
+  button.style.borderColor = PATTERN[model.pattern];
+  button.onclick = () => show(model);
+  bar.appendChild(button);
+  if (index === 0) show(model);
+});
+function frame() {
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (canvas.width !== width || canvas.height !== height) {
+    renderer.setSize(width, height, false);
+    camera.aspect = width / Math.max(height, 1);
+    camera.updateProjectionMatrix();
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

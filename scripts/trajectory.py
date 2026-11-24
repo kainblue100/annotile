@@ -19,7 +19,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-RESULTS = ROOT / "results"
+RESULTS = Path(__import__("os").environ.get("ANNOTILE_OUT", ROOT / "results"))
 DIFF = ("alveolar", "airway", "normal_epi", "AT1", "AT2_like", "cil")
 GENES = ("EPCAM", "MKI67", "UBE2C", "EGFR", "COL5A2", "PECAM1")
 COLORS = {
