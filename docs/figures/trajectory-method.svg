@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 860">
+  <title>Annotile trajectory method</title>
+  <style>
+    text { font-family: "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", sans-serif; fill: #1c1917; }
+    .muted { fill: #57534e; }
+    .rust { fill: #9a3412; }
+    .white { fill: #ffffff; }
+  </style>
+  <rect width="1040" height="860" fill="#ffffff"/>
+  <text x="28" y="34" font-size="18" font-weight="700" class="rust">1  小窗只和周围八格相连</text>
+  <text x="292" y="34" font-size="14" class="muted">示意格子，不是某一张切片</text>
+  <g stroke="#d6d3d1" stroke-width="2" fill="none">
+    <line x1="150" y1="148" x2="78" y2="76"/>
+    <line x1="150" y1="148" x2="150" y2="76"/>
+    <line x1="150" y1="148" x2="222" y2="76"/>
+    <line x1="150" y1="148" x2="78" y2="148"/>
+    <line x1="150" y1="148" x2="222" y2="148"/>
+    <line x1="150" y1="148" x2="150" y2="220"/>
+    <line x1="150" y1="148" x2="222" y2="220"/>
+  </g>
+  <line x1="176" y1="148" x2="196" y2="148" stroke="#9a3412" stroke-width="3"/>
+  <rect x="52" y="50" width="52" height="52" rx="6" fill="#9a3412"/>
+  <rect x="124" y="50" width="52" height="52" rx="6" fill="#9a3412"/>
+  <rect x="196" y="50" width="52" height="52" rx="6" fill="#0f766e"/>
+  <rect x="52" y="122" width="52" height="52" rx="6" fill="#9a3412"/>
+  <rect x="124" y="122" width="52" height="52" rx="6" fill="#9a3412" stroke="#f59e0b" stroke-width="3"/>
+  <rect x="196" y="122" width="52" height="52" rx="6" fill="#0f766e"/>
+  <rect x="52" y="194" width="52" height="52" rx="6" fill="#fafaf9" stroke="#d6d3d1" stroke-dasharray="4 3"/>
+  <rect x="124" y="194" width="52" height="52" rx="6" fill="#1d4ed8"/>
+  <rect x="196" y="194" width="52" height="52" rx="6" fill="#1d4ed8"/>
+  <g font-size="13" class="white" text-anchor="middle">
+    <text x="78" y="80">P1</text>
+    <text x="150" y="80">P1</text>
+    <text x="222" y="80">P2</text>
+    <text x="78" y="152">P1</text>
+    <text x="150" y="146">根</text>
+    <text x="150" y="164" font-size="11">P1</text>
+    <text x="222" y="152">P2</text>
+    <text x="150" y="224">P3</text>
+    <text x="222" y="224">P3</text>
+  </g>
+  <text x="78" y="224" font-size="13" fill="#78716c" text-anchor="middle">空</text>
+  <text x="292" y="78" font-size="15">一步的代价是两个小窗特征的欧氏距离。</text>
+  <text x="292" y="104" font-size="15">八个方向都能走，含对角。空格没有节点。</text>
+  <text x="292" y="130" font-size="15">对角和贴边用同一个距离，不因为路更长而加重。</text>
+  <text x="292" y="168" font-size="15">特征先按块标准化，再拼在一起：</text>
+  <text x="292" y="196" font-size="15">细胞类型比例</text>
+  <text x="292" y="222" font-size="15">表达主成分</text>
+  <text x="292" y="248" font-size="15">有配准 H&amp;E 时，再加上颜色、色差和纹理</text>
+  <line x1="28" y1="286" x2="1012" y2="286" stroke="#e7e5e4"/>
+  <text x="28" y="322" font-size="18" font-weight="700" class="rust">2  伪时间是从上皮根出发的最短路</text>
+  <circle cx="92" cy="430" r="34" fill="#9a3412"/>
+  <circle cx="332" cy="430" r="34" fill="#fff7ed" stroke="#9a3412" stroke-width="2"/>
+  <circle cx="572" cy="430" r="34" fill="#fff7ed" stroke="#9a3412" stroke-width="2"/>
+  <line x1="126" y1="430" x2="298" y2="430" stroke="#1c1917" stroke-width="2"/>
+  <line x1="366" y1="430" x2="538" y2="430" stroke="#1c1917" stroke-width="2"/>
+  <text x="212" y="418" font-size="14" text-anchor="middle">0.4</text>
+  <text x="452" y="418" font-size="14" text-anchor="middle">0.5</text>
+  <g class="white" font-size="14" text-anchor="middle">
+    <text x="92" y="426">根</text>
+    <text x="92" y="444" font-size="12">0</text>
+  </g>
+  <g font-size="16" text-anchor="middle">
+    <text x="332" y="436">0.4</text>
+    <text x="572" y="436">0.9</text>
+  </g>
+  <path d="M92 468 C210 530, 450 530, 572 468" fill="none" stroke="#a8a29e" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="332" y="548" font-size="14" fill="#57534e" text-anchor="middle">另一跳代价 1.6，比 0.4+0.5 更贵，不走</text>
+  <text x="640" y="400" font-size="15">根是分化上皮比例最高的小窗。</text>
+  <text x="640" y="426" font-size="15">沿途代价相加，留下最小的那条。</text>
+  <text x="640" y="452" font-size="15">再除以这张切片有限距离的中位数。</text>
+  <text x="640" y="478" font-size="15">中位小窗因此记成 1。</text>
+  <text x="640" y="510" font-size="15">到不了的小窗不进入后面的中位数。</text>
+  <line x1="28" y1="578" x2="1012" y2="578" stroke="#e7e5e4"/>
+  <text x="28" y="614" font-size="18" font-weight="700" class="rust">3  模式取中位数，至少 3 条边界才连边</text>
+  <text x="28" y="648" font-size="14" class="muted">同一模式的小窗</text>
+  <rect x="28" y="662" width="64" height="36" rx="6" fill="#9a3412"/>
+  <rect x="100" y="662" width="64" height="36" rx="6" fill="#9a3412"/>
+  <rect x="172" y="662" width="64" height="36" rx="6" fill="#9a3412"/>
+  <rect x="244" y="662" width="64" height="36" rx="6" fill="#9a3412"/>
+  <g class="white" font-size="14" text-anchor="middle">
+    <text x="60" y="685">0.20</text>
+    <text x="132" y="685">0.50</text>
+    <text x="204" y="685">0.80</text>
+    <text x="276" y="685">1.10</text>
+  </g>
+  <text x="28" y="724" font-size="15">四个数的中位数是 0.65，作为这个模式的伪时间。</text>
+  <text x="28" y="762" font-size="14" class="muted">模式之间的边界</text>
+  <rect x="28" y="776" width="22" height="22" rx="4" fill="#9a3412"/>
+  <rect x="58" y="776" width="22" height="22" rx="4" fill="#0f766e"/>
+  <text x="92" y="793" font-size="14">3 条相邻边界，连边</text>
+  <rect x="28" y="810" width="22" height="22" rx="4" fill="#9a3412"/>
+  <rect x="58" y="810" width="22" height="22" rx="4" fill="#1d4ed8"/>
+  <text x="92" y="827" font-size="14">只有 2 条，不连</text>
+  <text x="560" y="648" font-size="14" class="muted">从根所在的模式再走最短路</text>
+  <circle cx="640" cy="730" r="28" fill="#9a3412"/>
+  <circle cx="770" cy="730" r="28" fill="#0f766e"/>
+  <circle cx="900" cy="730" r="28" fill="#a16207" stroke="#9a3412" stroke-width="4"/>
+  <line x1="668" y1="730" x2="742" y2="730" stroke="#a8a29e" stroke-width="3"/>
+  <line x1="798" y1="730" x2="872" y2="730" stroke="#9a3412" stroke-width="6"/>
+  <g class="white" font-size="13" text-anchor="middle">
+    <text x="640" y="726">P1</text>
+    <text x="640" y="742" font-size="11">0.65</text>
+    <text x="770" y="726">P2</text>
+    <text x="770" y="742" font-size="11">1.20</text>
+    <text x="900" y="726">P3</text>
+    <text x="900" y="742" font-size="11">1.80</text>
+  </g>
+  <text x="560" y="788" font-size="15">红枝通向伪时间最大的模式。</text>
+  <text x="560" y="814" font-size="15">每张切片单独算。数字是示意。</text>
+</svg>

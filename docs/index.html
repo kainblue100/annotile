@@ -17,14 +17,20 @@
   .num { font-variant-numeric: tabular-nums; }
   .pick td { background: #fff7ed; }
   .scroll { overflow-x: auto; }
-  svg.bars { width: 100%; height: auto; background: white; border: 1px solid #e7e5e4; display: block; }
+  svg.bars, img.method { width: 100%; height: auto; background: white; border: 1px solid #e7e5e4; display: block; }
 </style>
 </head>
 <body>
 <main>
 <h1>17 张 Takano 切片，和原来 3 张片子</h1>
 <p>17 张是单独跑的一轮，小窗边长 800 微米，没有把 CosMx 和另外三张公开 Xenium 混进去。原来 3 张的完整页面还在，边长仍是 400 微米。数字都来自种子 42。</p>
-<p><a href="takano/index.html">17 张的完整结果</a> · <a href="three/index.html">原来 3 张的完整结果</a> · <a href="windows/index.html">四种小窗边长</a> · <a href="he/index.html">十张的组成和图像</a></p>
+<p><a href="takano/index.html">17 张的完整结果</a> · <a href="three/index.html">原来 3 张的完整结果</a> · <a href="windows/index.html">四种小窗边长</a> · <a href="he/index.html">十张的组成和图像</a> · <a href="#trajectory">轨迹怎么算</a></p>
+
+<h2 id="trajectory">轨迹怎么算</h2>
+<p>轨迹在聚类之后按切片计算，对应 Pham 等人 2023 年 Nature Communications 的 pseudo-time-space。下图是算法本身。格子里的数是示意，不是某张切片的测量。原来 3 张走出的树在<a href="three/index.html">完整结果</a>。</p>
+<img class="method" src="figures/trajectory-method.svg" alt="轨迹算法：八邻接小窗、从上皮根做最短路、模式取中位数并至少三条边界才连成树">
+<p>每个小窗只和周围八格相连，含对角。一步的代价是特征的欧氏距离。特征是标准化后的细胞类型比例和表达主成分；原来 3 张还有配准 H&amp;E 的颜色、色差和纹理，17 张 Takano 没有。根是这张切片上分化上皮比例最高的小窗，用到的列是肺泡、气道、正常上皮、AT1、AT2 样和纤毛里实际存在的那些。伪时间是从根走出的最小总代价，再除以该切片有限距离的中位数。</p>
+<p>一个模式的伪时间是它那些到得了的小窗的中位数。两个模式至少有 3 对相邻小窗才连边，边权是这些边界上特征距离的中位数。模式树是从根所在模式出发的最短路。红枝通向伪时间最大的模式。三张公开切片和 17 张都是每张单独算，没有接成一条轨迹。</p>
 
 <h2>放在一起看</h2>
 <table>
